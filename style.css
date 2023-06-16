@@ -108,10 +108,16 @@ body {
     padding-block: 4px;
     outline: 0;
     border: 1px solid black;
-    background-color: royalblue;
+    background-color: rgb(65, 105, 225);
     color: white;
     cursor: pointer;
     padding-inline: 25px;
+}
+
+#send:disabled {
+    background-color: rgba(65, 105, 225, 0.5);
+    cursor: default;
+    color: gray;
 }
 
 .msg-wrapper {

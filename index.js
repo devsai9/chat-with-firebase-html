@@ -120,12 +120,20 @@ function notSignedIn() {
     signInWithGoogleBtn.style.display = 'block';
     signOutBtn.style.display = 'none';
     profileDropdownDetailsWrapper.style.display = 'none';
+    send.setAttribute('disabled', 'true');
+    input.setAttribute('disabled', 'true');
+    input.style.color = 'white';
+    input.value = 'Please Sign-in';
 }
 
 function signedIn() {
     signInWithGoogleBtn.style.display = 'none';
     signOutBtn.style.display = 'block';
     profileDropdownDetailsWrapper.style.display = 'flex';
+    send.removeAttribute('disabled', 'true');
+    input.removeAttribute('disabled', 'true');
+    input.style.color = 'black';
+    input.value = '';
 }
 
 function customSignOut() {
