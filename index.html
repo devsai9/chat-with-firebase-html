@@ -1,47 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Not Chat</title>
-    <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth__en.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
-    <link rel="stylesheet" href="style.css">
-    <script type="module" src="index.js"></script>
-    <script src="profileDropdown.js" defer></script>
-</head>
-<body>
-    <h1>Not Chat</h1>
-    <img src="assets/images/default-pfp.jpg" id="profile-picture" alt="Profile Picture">
-    <div id="profile-dropdown">
-        <div id="profile-dropdown-details-wrapper">
-            <img src="assets/images/default-pfp.jpg" id="profile-dropwdown-picture" alt="Profile Picture">
-            <div id="profile-dropdown-details">
-                <p id="profile-dropdown-name">User</p>
-                <p id="profile-dropdown-email">user@example.com</p>
-            </div>
-        </div><br>
-        <button class="firebaseui-idp-button mdl-button mdl-js-button mdl-button--raised firebaseui-idp-google firebaseui-id-idp-button" data-provider-id="google.com" style="background-color:#ffffff" data-upgraded=",MaterialButton" id="sign-in-with-google">
-            <span class="firebaseui-idp-icon-wrapper">
-                <img class="firebaseui-idp-icon" alt="" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-            </span>
-            <span class="firebaseui-idp-text firebaseui-idp-text-long">Sign in with Google</span>
-            <!-- <span class="firebaseui-idp-text firebaseui-idp-text-short">Google</span> -->
-        </button><br>
-        <button id="sign-out">Sign out</button>
-    </div>
-    <div id="chat-window">
-        <!-- <div class="msg-wrapper">
-            <img src="assets/images/default-pfp.jpg" alt="Profile Picture" class="msg-pfp" />
-            <div class="msg-inner">
-                <p class="msg-sender">User</p>
-                <p class="msg-timestamp">6/15/2023 at 7:06 PM</p>
-                <p class="msg-content">Test 12345</p>
-            </div> -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Not Chat</title>
+        <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth__en.js"></script>
+        <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>Not Chat</h1>
+        <img src="/images/default-pfp.jpg" id="profile-picture" alt="Profile Picture">
+        <div id="profile-dropdown">
+            <div id="profile-dropdown-details-wrapper">
+                <img src="/images/default-pfp.jpg" id="profile-dropwdown-picture" alt="Profile Picture">
+                <div id="profile-dropdown-details">
+                    <p id="profile-dropdown-name">User</p>
+                    <p id="profile-dropdown-email">user@example.com</p>
+                </div>
+            </div><br>
+            <button class="firebaseui-idp-button mdl-button mdl-js-button mdl-button--raised firebaseui-idp-google firebaseui-id-idp-button" data-provider-id="google.com" style="background-color:#ffffff" data-upgraded=",MaterialButton" id="sign-in-with-google">
+                <span class="firebaseui-idp-icon-wrapper">
+                    <img class="firebaseui-idp-icon" alt="" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+                </span>
+                <span class="firebaseui-idp-text firebaseui-idp-text-long">Sign in with Google</span>
+                <!-- <span class="firebaseui-idp-text firebaseui-idp-text-short">Google</span> -->
+            </button><br>
+            <button id="sign-out">Sign out</button>
         </div>
-    </div>
-    <br>
-    <input type="text" id="input" placeholder="Type something to chat" autofocus/>
-    <button id="send">Send</button>
-</body>
+        <div id="chat-window">
+            <!-- <div class="msg-wrapper">
+                <img src="assets/images/default-pfp.jpg" alt="Profile Picture" class="msg-pfp" />
+                <div class="msg-inner">
+                    <p class="msg-sender">User</p>
+                    <p class="msg-timestamp">6/15/2023 at 7:06 PM</p>
+                    <p class="msg-content">Test 12345</p>
+                </div> -->
+            </div>
+        </div>
+        <br>
+        <input type="text" id="input" placeholder="Type something to chat" autofocus/>
+        <button id="send">Send</button>
+
+        <script src="/js/init.js" type="module"></script>
+        <script src="/js/app.js" type="module"></script>
+        <script src="/js/firestore.js" type="module"></script>
+        <script src="/js/auth.js" type="module"></script>
+        <script src="/js/profileDropdown.js"></script>
+    </body>
 </html>
