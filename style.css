@@ -58,7 +58,8 @@ body {
     margin-bottom: -10px;
 }
 
-#profile-dropdown-email {
+#sign-in-with-google {
+    z-index: 2;
 }
 
 .firebaseui-idp-icon-wrapper, .firebaseui-idp-text {
@@ -77,6 +78,7 @@ body {
     border-radius: 10px;
     cursor: pointer;
     font-size: 1.05rem;
+    z-index: 2;
 }
 
 #chat-window {
