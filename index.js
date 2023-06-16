@@ -1,9 +1,9 @@
-// Import the functions you need from the SDKs you need
+// Imported functions from SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, query, onSnapshot, orderBy, where } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
-// Your web app's Firebase configuration
+// Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyCdFXFvjXFUN4oRQrhh53kre4no6UrSLgU",
     authDomain: "chat-app-try1-saisiddhish.firebaseapp.com",
@@ -15,18 +15,37 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Initialize Firebase Firestore
 const db = getFirestore(app);
-
+// Get collection and define arrays used later
 const msgsCol = collection(db, 'messages');
-// const msgsSnapshot = await getDocs(msgsCol);
-// let msgsList = msgsSnapshot.docs.map(doc => doc.data());
-// console.log(msgsList);
 let msgsList = [];
-
 let orderedMsgsList = [];
 
-let chatWindow = document.querySelector('#chat-window');
+// Initialize Firebase Authentication
+const auth = getAuth(app);
+// Initialize the Google Auth Provider
+const provider = new GoogleAuthProvider();
+let username;
+let profile_picture;
+let email;
 
+const chatWindow = document.querySelector('#chat-window');
+const input = document.querySelector('#input');
+const send = document.querySelector('#send');
+send.addEventListener('click', sendMsg);
+const signInWithGoogleBtn = document.querySelector('#sign-in-with-google');
+signInWithGoogleBtn.addEventListener('click', signInWithGoogle);
+const signOutBtn = document.querySelector('#sign-out');
+signOutBtn.addEventListener('click', customSignOut);
+const profilePictureBtn = document.querySelector('#profile-picture');
+const profileDropdownDetailsWrapper = document.querySelector('#profile-dropdown-details-wrapper');
+const profileDropwdownPicture = document.querySelector('#profile-dropwdown-picture');
+const profileDropdownName = document.querySelector('#profile-dropdown-name');
+const profileDropdownEmail = document.querySelector('#profile-dropdown-email');
+
+// Live Chat
 const q = query(collection(db, "messages"));
 const unsubscribe = onSnapshot(q, (querySnapshot) => {
     msgsList = [];
@@ -37,6 +56,7 @@ const unsubscribe = onSnapshot(q, (querySnapshot) => {
     orderData();
 });
 
+// Orders data and put into orderedMsgsList[]
 async function orderData() {
     orderedMsgsList = [];
     const orderDataq = query(msgsCol, orderBy('order'));
@@ -47,12 +67,78 @@ async function orderData() {
     loadChatWindow();
 }
 
-// Code for website
-let input = document.querySelector('#input');
-let send = document.querySelector('#send');
+// Sign in
+// Sign in with Google
+function signInWithGoogle() {
+    signInWithPopup(auth, provider)
+    .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        // const token = credential.accessToken;
+        const user = result.user;
 
-send.addEventListener('click', sendMsg);
+        username = user.displayName;
+        profile_picture = user.photoURL;
+        email = user.email;
 
+        signedIn();
+    }).catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+
+        notSignedIn();
+    });
+}
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        username = user.displayName;
+        profile_picture = user.photoURL;
+        email = user.email;
+        
+        setProfileDropdown();
+    } else {
+        notSignedIn();
+    }
+});  
+
+function setProfileDropdown() {
+    signedIn();
+    profilePictureBtn.src = profile_picture;
+    profileDropwdownPicture.src = profile_picture;
+    profileDropdownName.innerText = username;
+    profileDropdownEmail.innerText = email;
+}
+
+function notSignedIn() {
+    profilePictureBtn.src = '/assets/images/default-pfp.jpg';
+    signInWithGoogleBtn.style.display = 'block';
+    signOutBtn.style.display = 'none';
+    profileDropdownDetailsWrapper.style.display = 'none';
+}
+
+function signedIn() {
+    signInWithGoogleBtn.style.display = 'none';
+    signOutBtn.style.display = 'block';
+    profileDropdownDetailsWrapper.style.display = 'flex';
+}
+
+function customSignOut() {
+    signOut(auth).then(() => {
+        // Sign-out successful.
+        notSignedIn();
+    }).catch((error) => {
+        // An error happened.
+        console.log(error);
+    });
+}
+
+// Creates Firebase document
 async function sendMsg() {
     let value = input.value;
     if (value == '' || value == ' ') {
@@ -65,10 +151,14 @@ async function sendMsg() {
         if (currentHour >= 12) {currentAM = 'PM';}
         if (currentHour > 12) {currentHour = currentHour - 12;}
 
-        let dateTime = (currentDate.getMonth()+1) + "/" + currentDate.getDate() + "/" + currentDate.getFullYear() + " at " + currentHour + ":" + currentDate.getMinutes()+ currentAM;
+        let currentMinutes = currentDate.getMinutes();
+        if (currentMinutes.length < 2) {currentMinutes = "0" + currentMinutes;}
+
+        let dateTime = (currentDate.getMonth()+1) + "/" + currentDate.getDate() + "/" + currentDate.getFullYear() + " at " + currentHour + ":" + currentDate.getMinutes() + currentAM;
 
         await setDoc(doc(db, "messages", (orderedMsgsList[orderedMsgsList.length - 1].order + 1).toString()), {
-            sender: "User",
+            sender: username,
+            senderPfp: profile_picture,
             content: value,
             order: orderedMsgsList[orderedMsgsList.length - 1].order + 1,
             timestamp: dateTime
@@ -79,18 +169,22 @@ async function sendMsg() {
     }
 }
 
+// Loads all messages
 function loadChatWindow() {
     chatWindow.innerHTML = '';
     for (let i = 0; i < orderedMsgsList.length; i++) {
-        reloadChatWindow(null, orderedMsgsList[i].name, orderedMsgsList[i].content, orderedMsgsList[i].timestamp);
+        reloadChatWindow(orderedMsgsList[i].senderPfp, orderedMsgsList[i].sender, orderedMsgsList[i].content, orderedMsgsList[i].timestamp);
     }
 }
 
+// Creates HTML elements to load one message with given inputs
 function reloadChatWindow(pfp, username, message, date) {
+    // Null checking
     if (!pfp || pfp == null) {pfp = '/assets/images/default-pfp.jpg';}
     if (!username || username == null) {username = 'User';}
     if (!message) {message = 'Test12345';}
 
+    // HTML Elements for one message
     let msg_wrapper = document.createElement('div');
     msg_wrapper.classList.add('msg-wrapper');
 
@@ -122,6 +216,7 @@ function reloadChatWindow(pfp, username, message, date) {
     chatWindow.appendChild(msg_wrapper);
 }
 
+// Allow the use of "Enter" to send messages
 document.onkeyup = function(eventKeyName) {
     eventKeyName = eventKeyName;
     if (eventKeyName.key == 'Enter') {
