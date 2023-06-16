@@ -1,4 +1,4 @@
-import { db, doc, setDoc, orderedMsgsList } from '/js/firestore.js';
+import { db, doc, setDoc, orderedMsgsList, roomId } from '/js/firestore.js';
 import { username, email, profile_picture } from '/js/auth.js';
 
 const chatWindow = document.querySelector('#chat-window');
@@ -24,11 +24,13 @@ async function sendMsg() {
 
         let dateTime = (currentDate.getMonth()+1) + "/" + currentDate.getDate() + "/" + currentDate.getFullYear() + " at " + currentHour + ":" + currentMinutes + currentAM;
 
-        await setDoc(doc(db, "messages", (orderedMsgsList[orderedMsgsList.length - 1].order + 1).toString()), {
+        redrawChatWindow();
+
+        await setDoc(doc(db, "rooms", roomId, "messages", (parseInt(orderedMsgsList[orderedMsgsList.length - 1].order) + 1).toString()), {
             sender: username,
             senderPfp: profile_picture,
             content: value,
-            order: orderedMsgsList[orderedMsgsList.length - 1].order + 1,
+            order: parseInt(orderedMsgsList[orderedMsgsList.length - 1].order) + 1,
             timestamp: dateTime
         });
 

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Not Chat</title>
+        <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth__en.js"></script>
+        <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
+        <link rel="stylesheet" href="style.css">
+        <script src="/js/init.js" type="module"></script>
+        <script src="/js/app.js" type="module"></script>
+        <script src="/js/firestore.js" type="module"></script>
+        <script src="/js/auth.js" type="module"></script>
+    </head>
+    <body>
+        <h1 id="title">Sai Chat</h1>
+        <img src="/images/default-pfp.jpg" id="profile-picture" alt="Profile Picture">
+        <div id="chat-window">
+            <!-- <div class="msg-wrapper">
+                <img src="assets/images/default-pfp.jpg" alt="Profile Picture" class="msg-pfp" />
+                <div class="msg-inner">
+                    <p class="msg-sender">User</p>
+                    <p class="msg-timestamp">6/15/2023 at 7:06 PM</p>
+                    <p class="msg-content">Test 12345</p>
+                </div> -->
+            </div>
+        </div>
+        <br>
+        <input type="text" id="input" placeholder="Type something to chat" autofocus/>
+        <button id="send">Send</button>
+    </body>
+</html>
