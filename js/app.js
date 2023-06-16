@@ -22,7 +22,7 @@ async function sendMsg() {
         let currentMinutes = currentDate.getMinutes();
         if (currentMinutes.length < 2) {currentMinutes = "0" + currentMinutes;}
 
-        let dateTime = (currentDate.getMonth()+1) + "/" + currentDate.getDate() + "/" + currentDate.getFullYear() + " at " + currentHour + ":" + currentDate.getMinutes() + currentAM;
+        let dateTime = (currentDate.getMonth()+1) + "/" + currentDate.getDate() + "/" + currentDate.getFullYear() + " at " + currentHour + ":" + currentMinutes + currentAM;
 
         await setDoc(doc(db, "messages", (orderedMsgsList[orderedMsgsList.length - 1].order + 1).toString()), {
             sender: username,
