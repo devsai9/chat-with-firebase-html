@@ -16,10 +16,14 @@ let orderedMsgsList = [];
 
 const roomMessages = collection(db, 'rooms', roomId, "messages");
 
+let availableRooms = [];
+let allowedEmails = [];
 const querySnapshot = await getDocs(collection(db, "rooms"));
 querySnapshot.forEach((doc) => {
     rooms.push(doc.data());
     roomIds.push(doc.data().roomId);
+    availableRooms.push(doc.id);
+    allowedEmails.push(doc.data().allowedEmails);
 });
 
 let roomIdIndex = roomIds.indexOf(roomId);
@@ -39,14 +43,12 @@ const unsubscribe = onSnapshot(q, (querySnapshot) => {
 async function orderData() {
     orderedMsgsList = [];
     const orderDataq = query(roomMessages, orderBy('order'));
-    const querySnapshot2 = await getDocs(orderDataq);
-    querySnapshot2.forEach((doc) => {
+    const querySnapshot3 = await getDocs(orderDataq);
+    querySnapshot3.forEach((doc) => {
         orderedMsgsList.push(doc.data());
     });
     redrawChatWindow();
 }
 
-console.log(orderedMsgsList);
-
 console.log('Initalized Firestore');
-export { doc, setDoc, orderedMsgsList, db, roomId };
+export { doc, setDoc, orderedMsgsList, db, roomId, availableRooms, allowedEmails };

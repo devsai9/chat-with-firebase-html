@@ -1,5 +1,6 @@
 import { app } from '/js/init.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { availableRooms, allowedEmails, roomId } from '/js/firestore.js';
 
 // Initialize Firebase Authentication
 const auth = getAuth(app);
@@ -24,9 +25,15 @@ onAuthStateChanged(auth, (user) => {
         username = user.displayName;
         profile_picture = user.photoURL;
         email = user.email;
+
+        let index = availableRooms.indexOf(roomId);
+        if (allowedEmails[index].includes(email) == false) {
+            window.location.href = 'index.html';
+        }
         signedIn();
     } else {
         notSignedIn();
+        window.location.href = 'index.html';
     }
 });  
 
