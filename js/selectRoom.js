@@ -1,5 +1,5 @@
 import { app } from '/js/init.js';
-import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
+import { getFirestore, collection, getDocs, where, query } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 const signInWithGoogleBtn = document.querySelector('#sign-in-with-google');
@@ -30,30 +30,6 @@ signInWithGoogleNotInDropdownBtn.addEventListener('click', signInWithGoogle);
 signOutBtn.addEventListener('click', customSignOut);
 send.addEventListener('click', joinRoom);
 
-let availableRooms = [];
-let allowedEmails = [];
-
-const querySnapshot = await getDocs(collection(db, "rooms"));
-querySnapshot.forEach((doc) => {
-    availableRooms.push(doc.id);
-    allowedEmails.push(doc.data().allowedEmails);
-});
-
-function joinRoom() {
-    if (availableRooms.includes(input.value)) {
-        output.innerText = "Authenticating. This may take a moment...";
-        let index = availableRooms.indexOf(input.value);
-        if (allowedEmails[index].includes(email)) {
-            output.innerText = "Success. Redirecting...";
-            window.location.href = 'room.html?roomId=' + input.value;
-        } else {
-            output.innerText = "You do not have access to this room";
-        }
-    } else {
-        output.innerText = "Room not found";
-    }
-}
-
 function signInWithGoogle() {
     signInWithPopup(auth, provider)
     .then((result) => {
@@ -67,6 +43,7 @@ function signInWithGoogle() {
         email = user.email;
         signedInBool = true;
 
+        getRooms();
         signedIn();
     }).catch((error) => {
         // Handle Errors here.
@@ -89,11 +66,40 @@ onAuthStateChanged(auth, (user) => {
         email = user.email;
         signedInBool = true;
         setProfileDropdown();
+        getRooms();
     } else {
         signedInBool = false;
         notSignedIn();
     }
-});  
+}); 
+
+let availableRooms = [];
+let allowedEmails = [];
+async function getRooms() {
+    if (signedInBool) {
+        const query1 = query(collection(db, "rooms"), where('allowedEmails', 'array-contains', email.toString()));
+        const querySnapshot = await getDocs(query1);
+        querySnapshot.forEach((doc) => {
+            availableRooms.push(doc.id);
+            allowedEmails.push(doc.data().allowedEmails);
+        });
+    }
+}
+
+function joinRoom() {
+    if (availableRooms.includes(input.value)) {
+        output.innerText = "Authenticating. This may take a moment...";
+        let index = availableRooms.indexOf(input.value);
+        if (allowedEmails[index].includes(email)) {
+            output.innerText = "Success. Redirecting...";
+            window.location.href = 'room.html?roomId=' + input.value;
+        } // else {
+        //     output.innerText = "You do not have access to this room";
+        // }
+    } else {
+        output.innerText = "Room not found";
+    }
+}
 
 function setProfileDropdown() {
     signedIn();
@@ -139,6 +145,8 @@ function customSignOut() {
         // Sign-out successful.
         notSignedIn();
         signedInBool = false;
+        availableRooms = [];
+        allowedEmails = [];
     }).catch((error) => {
         // An error happened.
         console.log(error);

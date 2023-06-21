@@ -1,10 +1,15 @@
-import { db, doc, setDoc, orderedMsgsList, roomId } from '/js/firestore.js';
+import { db, doc, setDoc, orderedMsgsList, roomId, availableRooms, allowedEmails } from '/js/firestore.js';
 import { username, email, profile_picture } from '/js/auth.js';
 
 const chatWindow = document.querySelector('#chat-window');
 const input = document.querySelector('#input');
 const send = document.querySelector('#send');
 send.addEventListener('click', sendMsg);
+
+let index = availableRooms.indexOf(roomId);
+if (allowedEmails[index].includes(email) == false) {
+    window.location.href = 'index.html';
+}
 
 // Creates Firebase document
 async function sendMsg() {
@@ -29,6 +34,7 @@ async function sendMsg() {
         await setDoc(doc(db, "rooms", roomId, "messages", (parseInt(orderedMsgsList[orderedMsgsList.length - 1].order) + 1).toString()), {
             sender: username,
             senderPfp: profile_picture,
+            senderEmail: email,
             content: value,
             order: parseInt(orderedMsgsList[orderedMsgsList.length - 1].order) + 1,
             timestamp: dateTime
