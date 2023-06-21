@@ -25,7 +25,7 @@ async function sendMsg() {
         if (currentHour > 12) {currentHour = currentHour - 12;}
 
         let currentMinutes = currentDate.getMinutes();
-        if (currentMinutes.length < 2) {currentMinutes = "0" + currentMinutes;}
+        if (currentMinutes < 10) {currentMinutes = "0" + currentMinutes.toString();}
 
         let dateTime = (currentDate.getMonth()+1) + "/" + currentDate.getDate() + "/" + currentDate.getFullYear() + " at " + currentHour + ":" + currentMinutes + currentAM;
 
