@@ -31,12 +31,18 @@ async function sendMsg() {
 
         redrawChatWindow();
 
-        await setDoc(doc(db, "rooms", roomId, "messages", (parseInt(orderedMsgsList[orderedMsgsList.length - 1].order) + 1).toString()), {
+        let docOrder;
+        try {
+            parseInt(orderedMsgsList[orderedMsgsList.length - 1].order);
+        } catch (error) {
+            docOrder = -1;
+        }
+        await setDoc(doc(db, "rooms", roomId, "messages", (docOrder + 1).toString()), {
             sender: username,
             senderPfp: profile_picture,
             senderEmail: email,
             content: value,
-            order: parseInt(orderedMsgsList[orderedMsgsList.length - 1].order) + 1,
+            order: docOrder + 1,
             timestamp: dateTime
         });
 
