@@ -3,8 +3,10 @@ import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/fireb
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 const signInWithGoogleBtn = document.querySelector('#sign-in-with-google');
+const signInWithGoogleNotInDropdownBtn = document.querySelector('#sign-in-with-google-out-of-dropdown');
 const signOutBtn = document.querySelector('#sign-out');
 const profilePictureBtn = document.querySelector('#profile-picture');
+const profileDropdown = document.querySelector('#profile-dropdown');
 const profileDropdownDetailsWrapper = document.querySelector('#profile-dropdown-details-wrapper');
 const profileDropwdownPicture = document.querySelector('#profile-dropwdown-picture');
 const profileDropdownName = document.querySelector('#profile-dropdown-name');
@@ -22,26 +24,26 @@ const provider = new GoogleAuthProvider();
 let username;
 let profile_picture;
 let email;
-let uid;
+let signedInBool;
 
-signInWithGoogleBtn.addEventListener('click', signInWithGoogle);
+signInWithGoogleNotInDropdownBtn.addEventListener('click', signInWithGoogle);
 signOutBtn.addEventListener('click', customSignOut);
 send.addEventListener('click', joinRoom);
 
 let availableRooms = [];
-let allowedUIDs = [];
+let allowedEmails = [];
 
 const querySnapshot = await getDocs(collection(db, "rooms"));
 querySnapshot.forEach((doc) => {
     availableRooms.push(doc.id);
-    allowedUIDs.push(doc.data().allowedUIDs);
+    allowedEmails.push(doc.data().allowedEmails);
 });
 
 function joinRoom() {
     if (availableRooms.includes(input.value)) {
         output.innerText = "Authenticating. This may take a moment...";
         let index = availableRooms.indexOf(input.value);
-        if (allowedUIDs[index].includes(uid)) {
+        if (allowedEmails[index].includes(email)) {
             output.innerText = "Success. Redirecting...";
             window.location.href = 'room.html?roomId=' + input.value;
         } else {
@@ -63,7 +65,7 @@ function signInWithGoogle() {
         username = user.displayName;
         profile_picture = user.photoURL;
         email = user.email;
-        uid = user.uid;
+        signedInBool = true;
 
         signedIn();
     }).catch((error) => {
@@ -75,6 +77,7 @@ function signInWithGoogle() {
         // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error);
 
+        signedInBool = false;
         notSignedIn();
     });
 }
@@ -84,10 +87,10 @@ onAuthStateChanged(auth, (user) => {
         username = user.displayName;
         profile_picture = user.photoURL;
         email = user.email;
-        uid = user.uid;
-        
+        signedInBool = true;
         setProfileDropdown();
     } else {
+        signedInBool = false;
         notSignedIn();
     }
 });  
@@ -101,24 +104,33 @@ function setProfileDropdown() {
 }
 
 function signedIn() {
+    signedInBool = true;
     signInWithGoogleBtn.style.display = 'none';
     signOutBtn.style.display = 'block';
     profileDropdownDetailsWrapper.style.display = 'flex';
+    profilePictureBtn.style.display = 'block';
     send.removeAttribute('disabled', 'true');
     input.removeAttribute('disabled', 'true');
+    input.style.display = 'block';
+    send.style.display = 'block';
     input.style.color = 'black';
     input.value = '';
+    signInWithGoogleNotInDropdownBtn.style.display = 'none';
 }
 
 function notSignedIn() {
+    signedInBool = false;
     profilePictureBtn.src = '/images/default-pfp.jpg';
     signInWithGoogleBtn.style.display = 'block';
     signOutBtn.style.display = 'none';
+    profileDropdown.style.display = 'none';
     profileDropdownDetailsWrapper.style.display = 'none';
+    profilePictureBtn.style.display = 'none';
     send.setAttribute('disabled', 'true');
     input.setAttribute('disabled', 'true');
-    input.style.color = 'white';
-    input.value = 'Please Sign-in';
+    input.style.display = 'none';
+    send.style.display = 'none';
+    signInWithGoogleNotInDropdownBtn.style.display = 'block';
 }
 
 // Sign Out
@@ -126,6 +138,7 @@ function customSignOut() {
     signOut(auth).then(() => {
         // Sign-out successful.
         notSignedIn();
+        signedInBool = false;
     }).catch((error) => {
         // An error happened.
         console.log(error);
@@ -139,3 +152,5 @@ document.onkeyup = function(eventKeyName) {
         send.click();
     }
 }
+
+export { signedInBool }
