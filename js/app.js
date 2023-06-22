@@ -37,7 +37,6 @@ async function sendMsg() {
         } catch (error) {
             docOrder = -1;
         }
-        console.log(docOrder);
         await setDoc(doc(db, "rooms", roomId, "messages", (docOrder + 1).toString()), {
             sender: username,
             senderPfp: profile_picture,
