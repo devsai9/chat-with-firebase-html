@@ -33,10 +33,11 @@ async function sendMsg() {
 
         let docOrder;
         try {
-            parseInt(orderedMsgsList[orderedMsgsList.length - 1].order);
+            docOrder = parseInt(orderedMsgsList[orderedMsgsList.length - 1].order);
         } catch (error) {
             docOrder = -1;
         }
+        console.log(docOrder);
         await setDoc(doc(db, "rooms", roomId, "messages", (docOrder + 1).toString()), {
             sender: username,
             senderPfp: profile_picture,
