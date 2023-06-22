@@ -3,7 +3,6 @@ import { getFirestore, collection, getDocs, where, query } from 'https://www.gst
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 const signInWithGoogleBtn = document.querySelector('#sign-in-with-google');
-const signInWithGoogleNotInDropdownBtn = document.querySelector('#sign-in-with-google-out-of-dropdown');
 const signOutBtn = document.querySelector('#sign-out');
 const profilePictureBtn = document.querySelector('#profile-picture');
 const profileDropdown = document.querySelector('#profile-dropdown');
@@ -11,8 +10,9 @@ const profileDropdownDetailsWrapper = document.querySelector('#profile-dropdown-
 const profileDropwdownPicture = document.querySelector('#profile-dropwdown-picture');
 const profileDropdownName = document.querySelector('#profile-dropdown-name');
 const profileDropdownEmail = document.querySelector('#profile-dropdown-email');
-const input = document.querySelector('#input');
-const send = document.querySelector('#send');
+const availableChats = document.querySelector('#available-chats');
+const dms = document.querySelector('#dms');
+const groups = document.querySelector('#groups');
 
 // Initialize Firebase Firestore
 const db = getFirestore(app);
@@ -25,10 +25,10 @@ let username;
 let profile_picture;
 let email;
 let signedInBool;
+let signedInWithGoogleBool = false;
 
-signInWithGoogleNotInDropdownBtn.addEventListener('click', signInWithGoogle);
+signInWithGoogleBtn.addEventListener('click', signInWithGoogle);
 signOutBtn.addEventListener('click', customSignOut);
-send.addEventListener('click', joinRoom);
 
 function signInWithGoogle() {
     signInWithPopup(auth, provider)
@@ -42,6 +42,7 @@ function signInWithGoogle() {
         profile_picture = user.photoURL;
         email = user.email;
         signedInBool = true;
+        signedInWithGoogleBool = true;
 
         getRooms();
         signedIn();
@@ -66,43 +67,75 @@ onAuthStateChanged(auth, (user) => {
         email = user.email;
         signedInBool = true;
         setProfileDropdown();
-        getRooms();
+        signedIn();
     } else {
         signedInBool = false;
         notSignedIn();
     }
 }); 
 
-let availableRooms = [];
 let allowedEmails = [];
+let availableRoomIds = [];
+let availableRoomEmojis = [];
+let availableRoomNames = [];
+let availableRoomTypes = [];
 async function getRooms() {
     if (signedInBool) {
         const query1 = query(collection(db, "rooms"), where('allowedEmails', 'array-contains', email.toString()));
         const querySnapshot = await getDocs(query1);
         querySnapshot.forEach((doc) => {
-            availableRooms.push(doc.id);
+            availableRoomIds.push(doc.id);
             allowedEmails.push(doc.data().allowedEmails);
+            availableRoomEmojis.push(doc.data().roomEmoji);
+            availableRoomNames.push(doc.data().roomName);
+            availableRoomTypes.push(doc.data().roomType);
         });
+    }
+    showAvailableRooms();
+}
+
+function showAvailableRooms() {
+    console.log(availableRoomIds.length);
+    for (let i = 0; i < availableRoomIds.length; i++) {
+        showAvailableRoom(availableRoomNames[i], "Room ID: " + availableRoomIds[i], availableRoomEmojis[i], availableRoomTypes[i]);
     }
 }
 
-function joinRoom() {
-    if (availableRooms.includes(input.value)) {
-        output.innerText = "Authenticating. This may take a moment...";
-        let index = availableRooms.indexOf(input.value);
-        if (allowedEmails[index].includes(email)) {
-            output.innerText = "Success. Redirecting...";
-            window.location.href = 'room.html?roomId=' + input.value;
-        } // else {
-        //     output.innerText = "You do not have access to this room";
-        // }
+function showAvailableRoom(roomName, roomId, roomEmoji, groupType) {
+    let container = document.createElement('div');
+    container.classList.add('chat-list-item');
+
+    let emoji = document.createElement('p');
+    emoji.classList.add('chat-list-item-roomemoji');
+    emoji.innerText = roomEmoji;
+    container.appendChild(emoji)
+
+    let roomDetails = document.createElement('div');
+    roomDetails.classList.add('chat-list-item-room-details');
+
+    let name = document.createElement('h3');
+    name.classList.add('chat-list-item-room-name');
+    name.innerText = roomName;
+    roomDetails.appendChild(name);
+
+    let id = document.createElement('p');
+    id.classList.add('chat-list-item-room-id');
+    id.innerText = roomId;
+    roomDetails.appendChild(id);
+    container.appendChild(roomDetails);
+
+    if (groupType == "dm") {
+        dms.appendChild(container);
     } else {
-        output.innerText = "Room not found";
+        groups.appendChild(container);
     }
+
+    container.addEventListener('click', function() {
+        window.location.href = 'room.html?roomId=' + roomId.replace("Room ID: ", "");
+    });
 }
 
 function setProfileDropdown() {
-    signedIn();
     profilePictureBtn.src = profile_picture;
     profileDropwdownPicture.src = profile_picture;
     profileDropdownName.innerText = username;
@@ -111,32 +144,39 @@ function setProfileDropdown() {
 
 function signedIn() {
     signedInBool = true;
+    
     signInWithGoogleBtn.style.display = 'none';
     signOutBtn.style.display = 'block';
     profileDropdownDetailsWrapper.style.display = 'flex';
     profilePictureBtn.style.display = 'block';
-    send.removeAttribute('disabled', 'true');
-    input.removeAttribute('disabled', 'true');
-    input.style.display = 'block';
-    send.style.display = 'block';
-    input.style.color = 'black';
-    input.value = '';
-    signInWithGoogleNotInDropdownBtn.style.display = 'none';
+    availableChats.style.display = 'block';
+
+    setTimeout(function() {
+        if (!signedInWithGoogleBool) {
+            getRooms();
+        }
+    }, 100);
 }
 
 function notSignedIn() {
+    allowedEmails = [];
+    availableRoomIds = [];
+    availableRoomEmojis = [];
+    availableRoomNames = [];
+    availableRoomTypes = [];
+
     signedInBool = false;
+
     profilePictureBtn.src = '/images/default-pfp.jpg';
     signInWithGoogleBtn.style.display = 'block';
     signOutBtn.style.display = 'none';
     profileDropdown.style.display = 'none';
     profileDropdownDetailsWrapper.style.display = 'none';
     profilePictureBtn.style.display = 'none';
-    send.setAttribute('disabled', 'true');
-    input.setAttribute('disabled', 'true');
-    input.style.display = 'none';
-    send.style.display = 'none';
-    signInWithGoogleNotInDropdownBtn.style.display = 'block';
+    availableChats.style.display = 'none';
+
+    dms.innerHTML = '';
+    groups.innerHTML = '';
 }
 
 // Sign Out
@@ -144,21 +184,10 @@ function customSignOut() {
     signOut(auth).then(() => {
         // Sign-out successful.
         notSignedIn();
-        signedInBool = false;
-        availableRooms = [];
-        allowedEmails = [];
     }).catch((error) => {
         // An error happened.
         console.log(error);
     });
-}
-
-// Allow the use of "Enter"
-document.onkeyup = function(eventKeyName) {
-    eventKeyName = eventKeyName;
-    if (eventKeyName.key == 'Enter') {
-        send.click();
-    }
 }
 
 export { signedInBool }

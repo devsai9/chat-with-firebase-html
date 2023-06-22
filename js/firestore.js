@@ -13,11 +13,10 @@ let rooms = [];
 let roomIds = [];
 let msgsList = [];
 let orderedMsgsList = [];
-
-const roomMessages = collection(db, 'rooms', roomId, "messages");
-
 let availableRooms = [];
 let allowedEmails = [];
+
+const roomMessages = collection(db, 'rooms', roomId, "messages");
 const querySnapshot = await getDocs(collection(db, "rooms"));
 querySnapshot.forEach((doc) => {
     rooms.push(doc.data());

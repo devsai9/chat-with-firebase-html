@@ -159,3 +159,36 @@ body {
 .msg-content {
     font-size: 0.95rem;
 }
+
+.chat-list-item {
+    background-color: #313449;
+    padding: 4px;
+    padding-inline: 20px;
+    border-radius: 10px;
+    width: -moz-fit-content;
+    width: fit-content;
+    cursor: pointer;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.chat-list-item-room-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.chat-list-item-room-name {
+    margin: 0px;
+}
+
+.chat-list-item-room-id {
+    margin: 0px;
+    margin-top: 5px;
+}
+
+.chat-list-item-roomemoji {
+    font-size: 1.55rem;
+}
