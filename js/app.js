@@ -107,4 +107,3 @@ document.onkeyup = function(eventKeyName) {
 }
 
 export { redrawChatWindow, addToChatWindow };
-console.log('Initalized app.js functions');

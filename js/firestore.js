@@ -49,5 +49,4 @@ async function orderData() {
     redrawChatWindow();
 }
 
-console.log('Initalized Firestore');
 export { doc, setDoc, orderedMsgsList, db, roomId, availableRooms, allowedEmails };

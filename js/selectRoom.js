@@ -95,7 +95,6 @@ async function getRooms() {
 }
 
 function showAvailableRooms() {
-    console.log(availableRoomIds.length);
     for (let i = 0; i < availableRoomIds.length; i++) {
         showAvailableRoom(availableRoomNames[i], "Room ID: " + availableRoomIds[i], availableRoomEmojis[i], availableRoomTypes[i]);
     }
