@@ -103,6 +103,8 @@ function showAvailableRooms() {
 function showAvailableRoom(roomName, roomId, roomEmoji, groupType) {
     let container = document.createElement('div');
     container.classList.add('chat-list-item');
+    container.tabIndex = 3;
+    container.id = roomId.replace("Room ID: ", "");
 
     let emoji = document.createElement('p');
     emoji.classList.add('chat-list-item-roomemoji');
@@ -154,7 +156,7 @@ function signedIn() {
         if (!signedInWithGoogleBool) {
             getRooms();
         }
-    }, 100);
+    }, 500);
 }
 
 function notSignedIn() {
@@ -167,7 +169,7 @@ function notSignedIn() {
     signedInBool = false;
 
     profilePictureBtn.src = '/images/default-pfp.jpg';
-    signInWithGoogleBtn.style.display = 'block';
+    signInWithGoogleBtn.style.display = 'flex';
     signOutBtn.style.display = 'none';
     profileDropdown.style.display = 'none';
     profileDropdownDetailsWrapper.style.display = 'none';
@@ -189,4 +191,29 @@ function customSignOut() {
     });
 }
 
-export { signedInBool }
+// Dropdown
+
+const imgBtn = document.querySelector('#profile-picture');
+const dropDown = document.querySelector('#profile-dropdown');
+
+imgBtn.addEventListener('click', toggleDropdown);
+
+document.onkeyup = function(eventKeyName) {
+    eventKeyName = eventKeyName;
+    if (eventKeyName.key == 'Enter' && availableRoomIds.includes(document.activeElement.id)) {
+        window.location.href = 'room.html?roomId=' + document.activeElement.id;
+    }
+    if (eventKeyName.key == 'Enter' && document.activeElement === imgBtn) {
+        toggleDropdown();
+    }
+}
+
+function toggleDropdown() {
+    if (signedInBool) {
+        if (dropDown.style.display == 'none' || dropDown.style.display == '') {
+            dropDown.style.display = 'flex';
+        } else {
+            dropDown.style.display = 'none';
+        }
+    } else {}
+}
