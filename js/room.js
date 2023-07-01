@@ -147,26 +147,45 @@ async function sendMsg() {
 function redrawChatWindow() {
     chatWindow.innerHTML = '';
     for (let i = 0; i < orderedMsgsList.length; i++) {
-        addToChatWindow(orderedMsgsList[i].senderPfp, orderedMsgsList[i].sender, orderedMsgsList[i].content, orderedMsgsList[i].timestamp);
+        addToChatWindow(orderedMsgsList[i].senderPfp, orderedMsgsList[i].sender, orderedMsgsList[i].content, orderedMsgsList[i].timestamp, orderedMsgsList[i].replyingTo);
     }
 }
 
 // Creates HTML elements to load one message with given inputs
-function addToChatWindow(pfp, username, message, date) {
-    // Null checking
-    if (!pfp || pfp == null) {pfp = '/images/default-pfp.jpg';}
-    if (!username || username == null) {username = 'User';}
-    if (!message) {message = 'Test12345';}
-
+function addToChatWindow(pfp='/images/default-pfp.jpg', username='User', message='Test12345', date, replyingTo=null) {
     // HTML Elements for one message
     let msg_wrapper = document.createElement('div');
     msg_wrapper.classList.add('msg-wrapper');
+
+    if (replyingTo != null) {
+        let reply = document.createElement('div');
+        reply.classList.add('reply');
+
+        let spine = document.createElement('div');
+        spine.classList.add('reply-spine');
+        reply.appendChild(spine);
+
+        let reply_sender = document.createElement('p');
+        reply_sender.innerText = orderedMsgsList[replyingTo].sender;
+        reply_sender.classList.add('reply-sender');
+        reply.appendChild(reply_sender);
+
+        let reply_msg = document.createElement('p');
+        reply_msg.innerText = orderedMsgsList[replyingTo].content;
+        reply_msg.classList.add('reply-msg');
+        reply.appendChild(reply_msg);
+        
+        msg_wrapper.appendChild(reply);
+    }
+
+    let msg = document.createElement('div');
+    msg.classList.add('msg');
 
     let img = document.createElement('img');
     img.src = pfp;
     img.alt = username + '\'s Profile Picture';
     img.classList.add('msg-pfp');
-    msg_wrapper.appendChild(img);
+    msg.appendChild(img);
 
     let msg_inner = document.createElement('div');
     msg_inner.classList.add('msg-inner');
@@ -186,7 +205,8 @@ function addToChatWindow(pfp, username, message, date) {
     msg_content.innerText = message;
     msg_inner.appendChild(msg_content);
 
-    msg_wrapper.appendChild(msg_inner);
+    msg.appendChild(msg_inner);
+    msg_wrapper.appendChild(msg);
     chatWindow.appendChild(msg_wrapper);
 }
 
