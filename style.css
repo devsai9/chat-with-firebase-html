@@ -7,17 +7,34 @@ body {
     font-family: "Roboto","Helvetica","Arial",sans-serif;
     background-color: #1c1d25;
     color: white;
-    margin-left: 30px;
+}
+
+#title {
+    width: 30%;
+    margin: 0;
+}
+
+.header {
+    background-color: #3c4043;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+.pfp {
+    width: 70%;
 }
 
 #profile-picture {
     width: 45px;
     border-radius: 200px;
-    position: absolute;
-    top: 0%;
-    right: 0%;
     margin: 10px;
     cursor: pointer;
+    display: flex;
+    align-self: center;
+    float: right;
 }
 
 #profile-dropdown {
@@ -144,11 +161,20 @@ body {
 
 .msg-wrapper {
     animation: opacity 0.5s ease 0s 1 forwards;
+    max-width: -moz-fit-content;
+    max-width: fit-content;
+    padding: 10px;
+    margin-top: -10px;
 }
 
 @keyframes opacity {
     from {opacity: 0;}
     to {opacity: 1;}
+}
+
+.replying-to {
+    background-color: #3c4043;
+    border-radius: 10px;
 }
 
 .reply-spine {

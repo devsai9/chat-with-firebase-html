@@ -64,6 +64,7 @@ let availableRooms = [];
 let msgs = [];
 let availableRoomIds = [];
 let allowedEmails = [];
+let replyingToVar = null;
 
 const roomMessages = collection(db, 'rooms', roomId, "messages");
 const querySnapshot = await getDocs(collection(db, "rooms"));
@@ -126,13 +127,15 @@ async function sendMsg() {
         } catch (error) {
             docOrder = -1;
         }
+        console.log(replyingToVar);
         await setDoc(doc(db, "rooms", roomId, "messages", (docOrder + 1).toString()), {
             sender: username,
             senderPfp: profile_picture,
             senderEmail: email,
             content: value,
             order: docOrder + 1,
-            timestamp: dateTime // serverTimestamp()
+            timestamp: dateTime, // serverTimestamp()
+            replyingTo: replyingToVar || null
         });
 
         input.value = '';
@@ -144,67 +147,73 @@ async function sendMsg() {
 function redrawChatWindow() {
     chatWindow.innerHTML = '';
     for (let i = 0; i < msgs.length; i++) {
-        addToChatWindow(msgs[i].senderPfp, msgs[i].sender, msgs[i].content, msgs[i].timestamp, msgs[i].replyingTo);
+        // HTML Elements for one message
+        let msg_wrapper = document.createElement('div');
+        msg_wrapper.classList.add('msg-wrapper');
+        msg_wrapper.id = 'id-' + i;
+
+        if (msgs[i].replyingTo != null || msgs[i].replyingTo != undefined) {
+            let reply = document.createElement('div');
+            reply.classList.add('reply');
+
+            let spine = document.createElement('div');
+            spine.classList.add('reply-spine');
+            reply.appendChild(spine);
+
+            let reply_sender = document.createElement('p');
+            reply_sender.innerText = msgs[msgs[i].replyingTo].sender;
+            reply_sender.classList.add('reply-sender');
+            reply.appendChild(reply_sender);
+
+            let reply_msg = document.createElement('p');
+            reply_msg.innerText = msgs[msgs[i].replyingTo].content;
+            reply_msg.classList.add('reply-msg');
+            reply.appendChild(reply_msg);
+            
+            msg_wrapper.appendChild(reply);
+        }
+
+        let msg = document.createElement('div');
+        msg.classList.add('msg');
+
+        let img = document.createElement('img');
+        img.src = msgs[i].senderPfp;
+        img.alt = username + '\'s Profile Picture';
+        img.classList.add('msg-pfp');
+        msg.appendChild(img);
+
+        let msg_inner = document.createElement('div');
+        msg_inner.classList.add('msg-inner');
+
+        let msg_sender = document.createElement('p');
+        msg_sender.classList.add('msg-sender');
+        msg_sender.innerText = msgs[i].sender;
+        msg_inner.appendChild(msg_sender);
+
+        let msg_timestamp = document.createElement('p');
+        msg_timestamp.classList.add('msg-timestamp');
+        msg_timestamp.innerText =  msgs[i].timestamp;
+        msg_inner.appendChild(msg_timestamp);
+
+        let msg_content = document.createElement('p');
+        msg_content.classList.add('msg-content');
+        msg_content.innerText =  msgs[i].content;
+        msg_inner.appendChild(msg_content);
+
+        msg.appendChild(msg_inner);
+        msg_wrapper.appendChild(msg);
+
+        msg_wrapper.addEventListener('click', function() {
+            if (replyingToVar != null || replyingToVar != undefined && replyingToVar != i) {
+                document.querySelector('#id-' + replyingToVar.toString()).classList.remove('replying-to');
+            }
+            replyingToVar = i;
+            msg_wrapper.classList.add('replying-to');
+            console.log(replyingToVar);
+        });
+
+        chatWindow.appendChild(msg_wrapper);
     }
-}
-
-// Creates HTML elements to load one message with given inputs
-function addToChatWindow(pfp='/images/default-pfp.jpg', username='User', message='Test12345', date, replyingTo=null) {
-    // HTML Elements for one message
-    let msg_wrapper = document.createElement('div');
-    msg_wrapper.classList.add('msg-wrapper');
-
-    if (replyingTo != null) {
-        let reply = document.createElement('div');
-        reply.classList.add('reply');
-
-        let spine = document.createElement('div');
-        spine.classList.add('reply-spine');
-        reply.appendChild(spine);
-
-        let reply_sender = document.createElement('p');
-        reply_sender.innerText = msgs[replyingTo].sender;
-        reply_sender.classList.add('reply-sender');
-        reply.appendChild(reply_sender);
-
-        let reply_msg = document.createElement('p');
-        reply_msg.innerText = msgs[replyingTo].content;
-        reply_msg.classList.add('reply-msg');
-        reply.appendChild(reply_msg);
-        
-        msg_wrapper.appendChild(reply);
-    }
-
-    let msg = document.createElement('div');
-    msg.classList.add('msg');
-
-    let img = document.createElement('img');
-    img.src = pfp;
-    img.alt = username + '\'s Profile Picture';
-    img.classList.add('msg-pfp');
-    msg.appendChild(img);
-
-    let msg_inner = document.createElement('div');
-    msg_inner.classList.add('msg-inner');
-
-    let msg_sender = document.createElement('p');
-    msg_sender.classList.add('msg-sender');
-    msg_sender.innerText = username;
-    msg_inner.appendChild(msg_sender);
-
-    let msg_timestamp = document.createElement('p');
-    msg_timestamp.classList.add('msg-timestamp');
-    msg_timestamp.innerText = date;
-    msg_inner.appendChild(msg_timestamp);
-
-    let msg_content = document.createElement('p');
-    msg_content.classList.add('msg-content');
-    msg_content.innerText = message;
-    msg_inner.appendChild(msg_content);
-
-    msg.appendChild(msg_inner);
-    msg_wrapper.appendChild(msg);
-    chatWindow.appendChild(msg_wrapper);
 }
 
 // Allow the use of "Enter" to send messages
