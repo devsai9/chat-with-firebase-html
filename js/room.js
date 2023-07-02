@@ -60,47 +60,44 @@ const roomId = searchParams.get('roomId');
 const db = getFirestore(app);
 
 // Define arrays used later
-let rooms = [];
-let roomIds = [];
-let msgsList = [];
-let orderedMsgsList = [];
 let availableRooms = [];
+let msgs = [];
+let availableRoomIds = [];
 let allowedEmails = [];
 
 const roomMessages = collection(db, 'rooms', roomId, "messages");
 const querySnapshot = await getDocs(collection(db, "rooms"));
 querySnapshot.forEach((doc) => {
-    rooms.push(doc.data());
-    roomIds.push(doc.data().roomId);
-    availableRooms.push(doc.id);
+    availableRooms.push(doc.data());
+    availableRoomIds.push(doc.id);
     allowedEmails.push(doc.data().allowedEmails);
 });
 
-let index = availableRooms.indexOf(roomId);
+let index = availableRoomIds.indexOf(roomId);
 if (allowedEmails[index].includes(email) == false) {
     window.location.href = 'index.html';
 }
 
-let roomIdIndex = roomIds.indexOf(roomId);
-document.querySelector('#title').innerText = rooms[roomIdIndex].roomName + " " + rooms[roomIdIndex].roomEmoji;
+let roomIdIndex = availableRoomIds.indexOf(roomId);
+document.querySelector('#title').innerText = availableRooms[roomIdIndex].name + " " + availableRooms[roomIdIndex].emoji;
 
 //* Live Chat
 const q = query(roomMessages);
 const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    msgsList = [];
+    msgs = [];
     querySnapshot.forEach((doc) => {
-        msgsList.push(doc.data());
+        msgs.push(doc.data());
     });
     orderData();
 });
 
-// Orders data and put into orderedMsgsList[]
+// Orders data and put into msgs[]
 async function orderData() {
-    orderedMsgsList = [];
+    msgs = [];
     const orderDataq = query(roomMessages, orderBy('order'));
     const querySnapshot3 = await getDocs(orderDataq);
     querySnapshot3.forEach((doc) => {
-        orderedMsgsList.push(doc.data());
+        msgs.push(doc.data());
     });
     redrawChatWindow();
 }
@@ -125,7 +122,7 @@ async function sendMsg() {
 
         let docOrder;
         try {
-            docOrder = parseInt(orderedMsgsList[orderedMsgsList.length - 1].order);
+            docOrder = parseInt(msgs[msgs.length - 1].order);
         } catch (error) {
             docOrder = -1;
         }
@@ -146,8 +143,8 @@ async function sendMsg() {
 // Loads all messages
 function redrawChatWindow() {
     chatWindow.innerHTML = '';
-    for (let i = 0; i < orderedMsgsList.length; i++) {
-        addToChatWindow(orderedMsgsList[i].senderPfp, orderedMsgsList[i].sender, orderedMsgsList[i].content, orderedMsgsList[i].timestamp, orderedMsgsList[i].replyingTo);
+    for (let i = 0; i < msgs.length; i++) {
+        addToChatWindow(msgs[i].senderPfp, msgs[i].sender, msgs[i].content, msgs[i].timestamp, msgs[i].replyingTo);
     }
 }
 
@@ -166,12 +163,12 @@ function addToChatWindow(pfp='/images/default-pfp.jpg', username='User', message
         reply.appendChild(spine);
 
         let reply_sender = document.createElement('p');
-        reply_sender.innerText = orderedMsgsList[replyingTo].sender;
+        reply_sender.innerText = msgs[replyingTo].sender;
         reply_sender.classList.add('reply-sender');
         reply.appendChild(reply_sender);
 
         let reply_msg = document.createElement('p');
-        reply_msg.innerText = orderedMsgsList[replyingTo].content;
+        reply_msg.innerText = msgs[replyingTo].content;
         reply_msg.classList.add('reply-msg');
         reply.appendChild(reply_msg);
         

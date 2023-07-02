@@ -78,7 +78,6 @@ let allowedEmails = [];
 let availableRoomIds = [];
 let availableRoomEmojis = [];
 let availableRoomNames = [];
-let availableRoomTypes = [];
 async function getRooms() {
     if (signedInBool) {
         const query1 = query(collection(db, "rooms"), where('allowedEmails', 'array-contains', email.toString()));
@@ -86,9 +85,8 @@ async function getRooms() {
         querySnapshot.forEach((doc) => {
             availableRoomIds.push(doc.id);
             allowedEmails.push(doc.data().allowedEmails);
-            availableRoomEmojis.push(doc.data().roomEmoji);
-            availableRoomNames.push(doc.data().roomName);
-            availableRoomTypes.push(doc.data().roomType);
+            availableRoomEmojis.push(doc.data().emoji);
+            availableRoomNames.push(doc.data().name);
         });
     }
     showAvailableRooms();
@@ -96,44 +94,40 @@ async function getRooms() {
 
 function showAvailableRooms() {
     for (let i = 0; i < availableRoomIds.length; i++) {
-        showAvailableRoom(availableRoomNames[i], "Room ID: " + availableRoomIds[i], availableRoomEmojis[i], availableRoomTypes[i]);
+        let container = document.createElement('div');
+        container.classList.add('chat-list-item');
+        container.tabIndex = 3;
+        container.id = availableRoomIds[i];
+
+        let emoji = document.createElement('p');
+        emoji.classList.add('chat-list-item-roomemoji');
+        emoji.innerText = availableRoomEmojis[i];
+        container.appendChild(emoji)
+
+        let roomDetails = document.createElement('div');
+        roomDetails.classList.add('chat-list-item-room-details');
+
+        let name = document.createElement('h3');
+        name.classList.add('chat-list-item-room-name');
+        name.innerText = availableRoomNames[i];
+        roomDetails.appendChild(name);
+
+        // let id = document.createElement('p');
+        // id.classList.add('chat-list-item-room-id');
+        // id.innerText = availableRoomIds[i];;
+        // roomDetails.appendChild(id);
+        container.appendChild(roomDetails);
+
+        if (allowedEmails[i].length <= 2) {
+            dms.appendChild(container);
+        } else {
+            groups.appendChild(container);
+        }
+
+        container.addEventListener('click', function() {
+            window.location.href = 'room.html?roomId=' + availableRoomIds[i];
+        });
     }
-}
-
-function showAvailableRoom(roomName, roomId, roomEmoji, groupType) {
-    let container = document.createElement('div');
-    container.classList.add('chat-list-item');
-    container.tabIndex = 3;
-    container.id = roomId.replace("Room ID: ", "");
-
-    let emoji = document.createElement('p');
-    emoji.classList.add('chat-list-item-roomemoji');
-    emoji.innerText = roomEmoji;
-    container.appendChild(emoji)
-
-    let roomDetails = document.createElement('div');
-    roomDetails.classList.add('chat-list-item-room-details');
-
-    let name = document.createElement('h3');
-    name.classList.add('chat-list-item-room-name');
-    name.innerText = roomName;
-    roomDetails.appendChild(name);
-
-    let id = document.createElement('p');
-    id.classList.add('chat-list-item-room-id');
-    id.innerText = roomId;
-    roomDetails.appendChild(id);
-    container.appendChild(roomDetails);
-
-    if (groupType == "dm") {
-        dms.appendChild(container);
-    } else {
-        groups.appendChild(container);
-    }
-
-    container.addEventListener('click', function() {
-        window.location.href = 'room.html?roomId=' + roomId.replace("Room ID: ", "");
-    });
 }
 
 function setProfileDropdown() {
@@ -164,7 +158,6 @@ function notSignedIn() {
     availableRoomIds = [];
     availableRoomEmojis = [];
     availableRoomNames = [];
-    availableRoomTypes = [];
 
     signedInBool = false;
 
