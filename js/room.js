@@ -160,17 +160,24 @@ function redrawChatWindow() {
             spine.classList.add('reply-spine');
             reply.appendChild(spine);
 
+            // let reply_details = document.createElement('div');
+            // reply_details.classList.add('reply-details');
+
             let reply_sender = document.createElement('p');
-            reply_sender.innerText = msgs[msgs[i].replyingTo].sender;
+            reply_sender.innerText = msgs[msgs[i].replyingTo].sender/* + ":" */;
             reply_sender.classList.add('reply-sender');
             reply.appendChild(reply_sender);
+            // reply_details.appendChild(reply_sender);
 
             let reply_msg = document.createElement('p');
             reply_msg.innerText = msgs[msgs[i].replyingTo].content;
             reply_msg.classList.add('reply-msg');
             reply.appendChild(reply_msg);
-            
+            // reply_details.appendChild(reply_msg);
+
+            // reply.appendChild(reply_details);
             msg_wrapper.appendChild(reply);
+            msg_wrapper.style.paddingTop = "5px";
         }
 
         let msg = document.createElement('div');
