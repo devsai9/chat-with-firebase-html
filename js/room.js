@@ -127,7 +127,7 @@ async function sendMsg() {
         } catch (error) {
             docOrder = -1;
         }
-        console.log(replyingToVar);
+
         await setDoc(doc(db, "rooms", roomId, "messages", (docOrder + 1).toString()), {
             sender: username,
             senderPfp: profile_picture,
@@ -136,10 +136,10 @@ async function sendMsg() {
             order: docOrder + 1,
             timestamp: dateTime, // serverTimestamp()
             replyingTo: replyingToVar || null
-        });
-
+        })
         input.value = '';
         input.focus();
+        replyingToVar = null;
     }
 }
 
@@ -152,7 +152,7 @@ function redrawChatWindow() {
         msg_wrapper.classList.add('msg-wrapper');
         msg_wrapper.id = 'id-' + i;
 
-        if (msgs[i].replyingTo != null || msgs[i].replyingTo != undefined) {
+        if (msgs[i].replyingTo != null && msgs[i].replyingTo != undefined) {
             let reply = document.createElement('div');
             reply.classList.add('reply');
 
@@ -204,12 +204,16 @@ function redrawChatWindow() {
         msg_wrapper.appendChild(msg);
 
         msg_wrapper.addEventListener('click', function() {
-            if (replyingToVar != null || replyingToVar != undefined && replyingToVar != i) {
-                document.querySelector('#id-' + replyingToVar.toString()).classList.remove('replying-to');
+            if (replyingToVar != i) {
+                if (replyingToVar != null && replyingToVar != undefined) {
+                    document.querySelector('#id-' + replyingToVar.toString()).classList.remove('replying-to');
+                }
+                replyingToVar = i;
+                msg_wrapper.classList.add('replying-to');
+            } else if (replyingToVar == i) {
+                replyingToVar = null;
+                msg_wrapper.classList.remove('replying-to');
             }
-            replyingToVar = i;
-            msg_wrapper.classList.add('replying-to');
-            console.log(replyingToVar);
         });
 
         chatWindow.appendChild(msg_wrapper);
