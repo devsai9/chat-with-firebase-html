@@ -9,18 +9,20 @@
         <script src="/js/selectRoom.js" type="module" defer></script>
     </head>
     <body>
-    <h1>Sai Chat - Select Room</h1>
-        <img src="/images/default-pfp.jpg" id="profile-picture" alt="Profile Picture" tabindex="1">
-        <div id="profile-dropdown">
-            <div id="profile-dropdown-details-wrapper">
-                <img src="/images/default-pfp.jpg" id="profile-dropwdown-picture" alt="Profile Picture">
-                <div id="profile-dropdown-details">
-                    <p id="profile-dropdown-name">User</p>
-                    <p id="profile-dropdown-email">user@example.com</p>
-                </div>
-            </div><br>
-            <br>
-            <button id="sign-out" tabindex="1">Sign out</button>
+        <div class="header">
+            <h1 id="title">Sai Chat - Select Room</h1>
+            <img src="/images/default-pfp.jpg" id="profile-picture" alt="Profile Picture" tabindex="1">
+            <div id="profile-dropdown">
+                <div id="profile-dropdown-details-wrapper">
+                    <img src="/images/default-pfp.jpg" id="profile-dropwdown-picture" alt="Profile Picture">
+                    <div id="profile-dropdown-details">
+                        <p id="profile-dropdown-name">User</p>
+                        <p id="profile-dropdown-email">user@example.com</p>
+                    </div>
+                </div><br>
+                <br>
+                <button id="sign-out" tabindex="1">Sign out</button>
+            </div>
         </div>
         <!-- <p id="output"></p>
         <input type="text" id="input" placeholder="Enter Room ID to join" autofocus/>
