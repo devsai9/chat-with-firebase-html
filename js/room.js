@@ -150,11 +150,12 @@ function redrawChatWindow() {
         // HTML Elements for one message
         let msg_wrapper = document.createElement('div');
         msg_wrapper.classList.add('msg-wrapper');
-        msg_wrapper.id = 'id-' + i;
+        msg_wrapper.id = 'msg-wrapper-' + i;
 
         if (msgs[i].replyingTo != null && msgs[i].replyingTo != undefined) {
             let reply = document.createElement('div');
             reply.classList.add('reply');
+            reply.id = 'reply-' + i;
 
             let spine = document.createElement('div');
             spine.classList.add('reply-spine');
@@ -166,12 +167,14 @@ function redrawChatWindow() {
             let reply_sender = document.createElement('p');
             reply_sender.innerText = msgs[msgs[i].replyingTo].sender/* + ":" */;
             reply_sender.classList.add('reply-sender');
+            reply_sender.id = 'reply-sender-' + i;
             reply.appendChild(reply_sender);
             // reply_details.appendChild(reply_sender);
 
             let reply_msg = document.createElement('p');
             reply_msg.innerText = msgs[msgs[i].replyingTo].content;
             reply_msg.classList.add('reply-msg');
+            reply_msg.id = 'reply-msg-' + i;
             reply.appendChild(reply_msg);
             // reply_details.appendChild(reply_msg);
 
@@ -182,29 +185,35 @@ function redrawChatWindow() {
 
         let msg = document.createElement('div');
         msg.classList.add('msg');
+        msg.id = 'msg-' + i;
 
         let img = document.createElement('img');
         img.src = msgs[i].senderPfp;
         img.alt = username + '\'s Profile Picture';
         img.classList.add('msg-pfp');
+        img.id = 'pfp-' + i;
         msg.appendChild(img);
 
         let msg_inner = document.createElement('div');
         msg_inner.classList.add('msg-inner');
+        msg_inner.id = 'msg-inner-' + i;
 
         let msg_sender = document.createElement('p');
         msg_sender.classList.add('msg-sender');
         msg_sender.innerText = msgs[i].sender;
+        msg_sender.id = 'msg-sender-' + i;
         msg_inner.appendChild(msg_sender);
 
         let msg_timestamp = document.createElement('p');
         msg_timestamp.classList.add('msg-timestamp');
         msg_timestamp.innerText =  msgs[i].timestamp;
+        msg_timestamp.id = 'msg-timestamp-' + i;
         msg_inner.appendChild(msg_timestamp);
 
         let msg_content = document.createElement('p');
         msg_content.classList.add('msg-content');
         msg_content.innerText =  msgs[i].content;
+        msg_content.id = 'msg-content-' + i;
         msg_inner.appendChild(msg_content);
 
         msg.appendChild(msg_inner);
@@ -213,7 +222,7 @@ function redrawChatWindow() {
         msg_wrapper.addEventListener('click', function() {
             if (replyingToVar != i) {
                 if (replyingToVar != null && replyingToVar != undefined) {
-                    document.querySelector('#id-' + replyingToVar.toString()).classList.remove('replying-to');
+                    document.querySelector('#msg-wrapper-' + replyingToVar.toString()).classList.remove('replying-to');
                 }
                 replyingToVar = i;
                 msg_wrapper.classList.add('replying-to');
@@ -232,5 +241,23 @@ document.onkeyup = function(eventKeyName) {
     eventKeyName = eventKeyName;
     if (eventKeyName.key == 'Enter') {
         send.click();
+    }
+}
+
+window.onresize = function() {
+    if (window.innerWidth <= 480) {
+        for (let j = 0; j < msgs.length; j++) {
+            let msg_sender = document.querySelector('#msg-sender-' + j).innerText;
+            if (msg_sender.length >= 20) {
+                document.querySelector('#msg-sender-' + j).innerText = msg_sender.substr(0, 20) + "...";
+            }
+
+            if (msgs[j].replyingTo != null) {
+                let reply_sender = document.querySelector('#reply-sender-' + j).innerText;
+                if (reply_sender.length >= 20) {
+                    document.querySelector('#reply-sender-' + j).innerText = reply_sender.substr(0, 20) + "...";
+                }
+            }
+        }
     }
 }

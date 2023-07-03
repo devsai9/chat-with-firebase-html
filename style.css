@@ -9,11 +9,6 @@ body {
     color: white;
 }
 
-#title {
-    width: 30%;
-    margin: 0;
-}
-
 .header {
     background-color: #3c4043;
     display: flex;
@@ -23,8 +18,9 @@ body {
     border-radius: 10px;
 }
 
-.pfp {
-    width: 70%;
+#title {
+    width: 100%;
+    margin: 0;
 }
 
 #profile-picture {
