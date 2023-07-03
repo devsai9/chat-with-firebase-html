@@ -4,7 +4,9 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Sai Chat</title>
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+        <link rel="stylesheet" href="shared.css">
+        <link rel="stylesheet" href="index.css">
         <script type="module" src="/js/init.js"></script>
         <script src="/js/selectRoom.js" type="module" defer></script>
     </head>
@@ -24,22 +26,42 @@
                 <button id="sign-out" tabindex="1">Sign out</button>
             </div>
         </div>
-        <!-- <p id="output"></p>
-        <input type="text" id="input" placeholder="Enter Room ID to join" autofocus/>
-        <button id="send">Join</button> -->
         <button id="sign-in-with-google">
             <img alt="Google Logo" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
             <p>Sign in with Google</p>
         </button>
         <br>
-        <div id="available-chats">
-            <div id="dms-container">
-                <h2>DMs</h2>
-                <div id="dms"></div>
+        <div id="side-menu">
+            <div id="side-menu-btns">
+                <div id="dms-btn" class="side-menu-btn side-menu-btn-active">
+                    <span class="material-symbols-outlined">
+                        chat
+                    </span>
+                    <p>DMs</p>
+                </div>
+                <div id="groups-btn" class="side-menu-btn">
+                    <span class="material-symbols-outlined">
+                        group
+                    </span>
+                    <p>Groups</p>
+                </div>
             </div>
-            <div id="groups-container">
-                <h2>Group Chats</h2>
-                <div id="groups"></div>
+            <div id="available-chats">
+                <div id="dms-container">
+                    <h2>DMs</h2>
+                    <div id="dms">
+                        <!-- <div class="chat-list-item" tabindex="3" id="dKLj51l35nfjrFFSzi1y">
+                            <p class="chat-list-item-roomemoji">✅</p>
+                            <div class="chat-list-item-room-details">
+                                <h3 class="chat-list-item-room-name">Example DM</h3>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                <div id="groups-container">
+                    <h2>Groups</h2>
+                    <div id="groups"></div>
+                </div>
             </div>
         </div>
     </body>

@@ -165,7 +165,7 @@ function redrawChatWindow() {
             // reply_details.classList.add('reply-details');
 
             let reply_sender = document.createElement('p');
-            reply_sender.innerText = msgs[msgs[i].replyingTo].sender/* + ":" */;
+            reply_sender.innerText = msgs[msgs[i].replyingTo].sender + ":";
             reply_sender.classList.add('reply-sender');
             reply_sender.id = 'reply-sender-' + i;
             reply.appendChild(reply_sender);
@@ -255,7 +255,7 @@ window.onresize = function() {
             if (msgs[j].replyingTo != null) {
                 let reply_sender = document.querySelector('#reply-sender-' + j).innerText;
                 if (reply_sender.length >= 20) {
-                    document.querySelector('#reply-sender-' + j).innerText = reply_sender.substr(0, 20) + "...";
+                    document.querySelector('#reply-sender-' + j).innerText = reply_sender.substr(0, 20) + "...:";
                 }
             }
         }

@@ -4,15 +4,21 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signO
 
 const signInWithGoogleBtn = document.querySelector('#sign-in-with-google');
 const signOutBtn = document.querySelector('#sign-out');
+
 const profilePictureBtn = document.querySelector('#profile-picture');
 const profileDropdown = document.querySelector('#profile-dropdown');
 const profileDropdownDetailsWrapper = document.querySelector('#profile-dropdown-details-wrapper');
 const profileDropwdownPicture = document.querySelector('#profile-dropwdown-picture');
 const profileDropdownName = document.querySelector('#profile-dropdown-name');
 const profileDropdownEmail = document.querySelector('#profile-dropdown-email');
+
 const availableChats = document.querySelector('#available-chats');
+const dms_container = document.querySelector('#dms-container');
+const groups_container = document.querySelector('#groups-container');
 const dms = document.querySelector('#dms');
 const groups = document.querySelector('#groups');
+const dms_btn = document.querySelector('#dms-btn');
+const groups_btn = document.querySelector('#groups-btn');
 
 // Initialize Firebase Firestore
 const db = getFirestore(app);
@@ -29,6 +35,9 @@ let signedInWithGoogleBool = false;
 
 signInWithGoogleBtn.addEventListener('click', signInWithGoogle);
 signOutBtn.addEventListener('click', customSignOut);
+
+dms_btn.addEventListener('click', toggleActiveTab);
+groups_btn.addEventListener('click', toggleActiveTab);
 
 function signInWithGoogle() {
     signInWithPopup(auth, provider)
@@ -128,6 +137,7 @@ function showAvailableRooms() {
             window.location.href = 'room.html?roomId=' + availableRoomIds[i];
         });
     }
+    groups_container.style.display = 'none';
 }
 
 function setProfileDropdown() {
@@ -184,8 +194,23 @@ function customSignOut() {
     });
 }
 
-// Dropdown
+// Side Menu
+function toggleActiveTab() {
+    let activeTabId = document.querySelector('.side-menu-btn-active').id;
+    if (activeTabId == 'dms-btn') {
+        dms_btn.classList.remove('side-menu-btn-active');
+        groups_btn.classList.add('side-menu-btn-active');
+        dms_container.style.display = 'none';
+        groups_container.style.display = 'block';
+    } else if (activeTabId == 'groups-btn') {
+        groups_btn.classList.remove('side-menu-btn-active');
+        dms_btn.classList.add('side-menu-btn-active');
+        groups_container.style.display = 'none';
+        dms_container.style.display = 'block';
+    }
+}
 
+// Dropdown
 const imgBtn = document.querySelector('#profile-picture');
 const dropDown = document.querySelector('#profile-dropdown');
 
