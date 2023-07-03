@@ -110,6 +110,10 @@
     border-top-left-radius: 10px;
 }
 
+.side-menu-btn:nth-child(1) > span {
+    margin-bottom: 5px;
+}
+
 .side-menu-btn:nth-child(2) {
     border-bottom-left-radius: 10px;
 }
