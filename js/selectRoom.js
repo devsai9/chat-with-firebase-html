@@ -12,6 +12,8 @@ const profileDropwdownPicture = document.querySelector('#profile-dropwdown-pictu
 const profileDropdownName = document.querySelector('#profile-dropdown-name');
 const profileDropdownEmail = document.querySelector('#profile-dropdown-email');
 
+const sideMenu = document.querySelector('#side-menu');
+const sideMenuBtns = document.querySelector('#side-menu-btns');
 const availableChats = document.querySelector('#available-chats');
 const dms_container = document.querySelector('#dms-container');
 const groups_container = document.querySelector('#groups-container');
@@ -19,6 +21,9 @@ const dms = document.querySelector('#dms');
 const groups = document.querySelector('#groups');
 const dms_btn = document.querySelector('#dms-btn');
 const groups_btn = document.querySelector('#groups-btn');
+
+const loadedChat = document.querySelector('#loadedChat');
+loadedChat.style.display = 'none';
 
 // Initialize Firebase Firestore
 const db = getFirestore(app);
@@ -134,10 +139,29 @@ function showAvailableRooms() {
         }
 
         container.addEventListener('click', function() {
-            window.location.href = 'room.html?roomId=' + availableRoomIds[i];
+            loadChat(availableRoomIds[i], availableRoomNames[i]);
         });
     }
     groups_container.style.display = 'none';
+}
+
+function loadChat(roomId, roomName) {
+    history.replaceState({page: 1}, "Sai Chat: " + roomName, "?roomId=" + roomId);
+    loadedChat.style.display = 'block';
+    loadedChat.innerHTML = '';
+    $.ajax({
+        type: "GET",
+        accepts: {
+            html: 'application/html'
+        },
+        url: "room.html",
+        success: function (result) {
+            $('#loadedChat').html(result);
+            document.querySelector('#title').innerText = roomName;
+        },
+        dataType: "html",
+        cache: false
+    });
 }
 
 function setProfileDropdown() {
@@ -154,7 +178,8 @@ function signedIn() {
     signOutBtn.style.display = 'block';
     profileDropdownDetailsWrapper.style.display = 'flex';
     profilePictureBtn.style.display = 'block';
-    availableChats.style.display = 'block';
+    sideMenu.style.display = 'flex';
+    availableChats.style.display = 'none';
 
     setTimeout(function() {
         if (!signedInWithGoogleBool) {
@@ -177,6 +202,7 @@ function notSignedIn() {
     profileDropdown.style.display = 'none';
     profileDropdownDetailsWrapper.style.display = 'none';
     profilePictureBtn.style.display = 'none';
+    sideMenu.style.display = 'none';
     availableChats.style.display = 'none';
 
     dms.innerHTML = '';
@@ -202,11 +228,33 @@ function toggleActiveTab() {
         groups_btn.classList.add('side-menu-btn-active');
         dms_container.style.display = 'none';
         groups_container.style.display = 'block';
+        availableChats.children[1].children[1].children[0].focus();
     } else if (activeTabId == 'groups-btn') {
         groups_btn.classList.remove('side-menu-btn-active');
         dms_btn.classList.add('side-menu-btn-active');
         groups_container.style.display = 'none';
         dms_container.style.display = 'block';
+        availableChats.children[0].children[1].children[0].focus();
+    }
+}
+
+sideMenuBtns.addEventListener('mouseover', function() {
+    toggleAvailableChats('on');
+});
+
+sideMenuBtns.addEventListener('mouseleave', function() {
+    toggleAvailableChats('off');
+});
+
+function toggleAvailableChats(state='off') {
+    if (state == 'on') {
+        availableChats.style.display = 'block';
+        sideMenu.classList.add('move-before');
+        sideMenu.style.borderBottomRightRadius = 0;
+    } else {
+        availableChats.style.display = 'none';
+        sideMenu.classList.remove('move-before');
+        sideMenu.style.borderBottomRightRadius = 10 + "px";
     }
 }
 
@@ -218,11 +266,37 @@ imgBtn.addEventListener('click', toggleDropdown);
 
 document.onkeyup = function(eventKeyName) {
     eventKeyName = eventKeyName;
-    if (eventKeyName.key == 'Enter' && availableRoomIds.includes(document.activeElement.id)) {
-        window.location.href = 'room.html?roomId=' + document.activeElement.id;
+    if (eventKeyName.key == 'Enter') {
+        if (availableRoomIds.includes(document.activeElement.id)) {
+            loadChat(document.activeElement.id, document.activeElement.children[1].children[0].innerText);
+            toggleAvailableChats('off');
+        }
+        if (document.activeElement === imgBtn) {
+            toggleDropdown();
+        }
+        if (document.activeElement === dms_btn) {
+            toggleAvailableChats('on');
+            toggleActiveTab();
+        }
+        if (document.activeElement === groups_btn) {
+            toggleAvailableChats('on');
+            toggleActiveTab();
+        }
     }
-    if (eventKeyName.key == 'Enter' && document.activeElement === imgBtn) {
-        toggleDropdown();
+    if (eventKeyName.key == 'Tab') {
+        // let tempArr = [dms_btn, groups_btn, availableChats];
+        let tempArr = [availableChats.children[0].children[1].children, availableChats.children[1].children[1].children];
+        let tempArr2 = [];
+        for (let j = 0; j < tempArr.length; j++) {
+            for (let k = 0; k < tempArr[j].length; k++) {
+                tempArr2.push(tempArr[j][k]);
+            }
+        }
+        tempArr2.push(groups_btn);
+        tempArr2.push(dms_btn);
+        if (!tempArr2.includes(document.activeElement)) {
+            toggleAvailableChats('off');
+        }
     }
 }
 
