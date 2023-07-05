@@ -24,10 +24,6 @@
     border-radius: 10px;
 }
 
-#send:focus {
-    margin: 1px;
-}
-
 #input:focus {
     outline: 1px solid white;
 }
@@ -52,10 +48,24 @@
     justify-content: center;
 }
 
+#send:hover {
+    background-color: rgba(65, 105, 225, 0.869);
+}
+
 #send:disabled {
-    background-color: rgba(65, 105, 225, 0.5);
+    background-color: #464753;
     cursor: default;
     color: gray;
+}
+
+#send:disabled:hover {
+    background-color: #464753;
+    cursor: default;
+    color: gray;
+}
+
+#send:focus {
+    margin: 1px;
 }
 
 .msg-wrapper {
