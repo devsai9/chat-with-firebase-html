@@ -257,7 +257,7 @@
                 }
             }
 
-            window.onresize = function() {
+            function shrinkNames() {
                 if (window.innerWidth <= 480) {
                     for (let j = 0; j < msgs.length; j++) {
                         let msg_sender = document.querySelector('#msg-sender-' + j).innerText;
@@ -273,6 +273,14 @@
                         }
                     }
                 }
+            }
+
+            window.onresize = function() {
+                shrinkNames();
+            }
+
+            window.onload = function () {
+                shrinkNames();
             }
         </script>
     </body>
