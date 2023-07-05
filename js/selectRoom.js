@@ -246,7 +246,7 @@ sideMenuBtns.addEventListener('mouseover', function() {
     toggleAvailableChats('on');
 });
 
-sideMenuBtns.addEventLitabner('mouseleave', function() {
+sideMenuBtns.addEventListener('mouseleave', function() {
     toggleAvailableChats('off');
 });
 
