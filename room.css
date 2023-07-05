@@ -145,8 +145,32 @@
 .msg-timestamp {
     color: rgba(255, 255, 255, 0.5);
     display: inline-block;
+    margin-left: 5px !important
 }
 
 .msg-content {
     font-size: 0.95rem;
 }
+
+.date-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #aeafc8;
+    font-size: 1.15rem;
+}
+
+/* .date-block::before {
+    content: "";
+    position: relative;
+    width: calc(100vw - 20px - 10px - 30px - 125px);
+    margin-block: 10px;
+    height: 2px;
+    background-color: #aeafc8;
+    margin-bottom: -5px;
+}
+
+.date-block > p {
+    margin-bottom: -10px;
+} */

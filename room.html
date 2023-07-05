@@ -184,7 +184,31 @@
             // Loads all messages
             function redrawChatWindow() {
                 chatWindow.innerHTML = '';
+
+                let date_block = document.createElement('div');
+                date_block.classList.add('date-block');
+
+                let date = document.createElement('p');
+                date.innerText = monthNumConvert(parseInt(msgs[0].timestamp.split(' ')[0].split('/')[0])).toString() + ' ' + msgs[0].timestamp.split(' ')[0].split('/')[1] + ', ' + msgs[0].timestamp.split(' ')[0].split('/')[2];
+
+                date_block.appendChild(date);
+                chatWindow.appendChild(date_block);
+                let currentMsgDate = msgs[0].timestamp.split(' ')[0];
+
                 for (let i = 0; i < msgs.length; i++) {
+                    if (currentMsgDate != msgs[i].timestamp.split(' ')[0]) {
+                        let date_block = document.createElement('div');
+                        date_block.classList.add('date-block');
+
+                        let date = document.createElement('p');
+                        date.innerText = monthNumConvert(parseInt(msgs[i].timestamp.split(' ')[0].split('/')[0])).toString() + ' ' + msgs[i].timestamp.split(' ')[0].split('/')[1] + ', ' + msgs[i].timestamp.split(' ')[0].split('/')[2];
+
+                        date_block.appendChild(date);
+                        chatWindow.appendChild(date_block);
+
+                        currentMsgDate = msgs[i].timestamp.split(' ')[0];
+                    }
+
                     // HTML Elements for one message
                     let msg_wrapper = document.createElement('div');
                     msg_wrapper.classList.add('msg-wrapper');
@@ -244,7 +268,7 @@
 
                     let msg_timestamp = document.createElement('p');
                     msg_timestamp.classList.add('msg-timestamp');
-                    msg_timestamp.innerText =  msgs[i].timestamp;
+                    msg_timestamp.innerText =  msgs[i].timestamp.split(' ')[2];
                     msg_timestamp.id = 'msg-timestamp-' + i;
                     msg_inner.appendChild(msg_timestamp);
 
@@ -275,6 +299,50 @@
                 shrinkNames();
             }
 
+            // Converts a number into a month
+            function monthNumConvert(month) {
+                let monthWord;
+                switch (month) {
+                    case 1:
+                        monthWord = "Jan";
+                        break;
+                    case 2:
+                        monthWord = "Feb";
+                        break;
+                    case 3:
+                        monthWord = "Mar";
+                        break;
+                    case 4:
+                        monthWord = "Apr";
+                        break;
+                    case 5:
+                        monthWord = "May";
+                        break;
+                    case 6:
+                        monthWord = "Jun";
+                        break;
+                    case 7:
+                        monthWord = "Jul";
+                        break;
+                    case 8:
+                        monthWord = "Aug";
+                        break;
+                    case 9:
+                        monthWord = "Sept";
+                        break;
+                    case 10:
+                        monthWord = "Oct";
+                        break;
+                    case 11:
+                        monthWord = "Nov";
+                        break;
+                    case 12:
+                        monthWord = "Dec";
+                        break;
+                }
+                return monthWord
+            }
+
             // Cuts off sender names if they are longer than 12 characters and if the screen size is <480 px
             function shrinkNames() {
                 if (window.innerWidth <= 480) {
@@ -284,7 +352,7 @@
                             document.querySelector('#msg-sender-' + j).innerText = msg_sender.substr(0, 12) + "...";
                         }
 
-                        if (msgs[j].replyingTo != null) {
+                        if (msgs[j].replyingTo != null || msgs[j].replyingTo != undefined) {
                             let reply_sender = document.querySelector('#reply-sender-' + j).innerText;
                             if (reply_sender.length >= 12) {
                                 document.querySelector('#reply-sender-' + j).innerText = reply_sender.substr(0, 12) + "...:";
@@ -295,11 +363,11 @@
                         }
                     }
                 }
+                checkInputValidity();
             }
 
-            document.addEventListener('load', function() {
+            window.addEventListener('load', function() {
                 shrinkNames();
-                checkInputValidity();
             });
             window.addEventListener('resize', shrinkNames);
             input.addEventListener('input', function() {

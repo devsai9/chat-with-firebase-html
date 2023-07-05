@@ -147,22 +147,29 @@ function showAvailableRooms() {
 }
 
 function loadChat(roomId, roomName) {
-    history.replaceState({page: 1}, "Sai Chat: " + roomName, "?roomId=" + roomId);
-    loadedChat.style.display = 'block';
-    loadedChat.innerHTML = '';
-    $.ajax({
-        type: "GET",
-        accepts: {
-            html: 'application/html'
-        },
-        url: "room.html",
-        success: function (result) {
-            $('#loadedChat').html(result);
-            document.querySelector('#title').innerText = roomName;
-        },
-        dataType: "html",
-        cache: false
-    });
+    const searchParams = new URLSearchParams(window.location.search);
+    const roomId2 = searchParams.get('roomId');
+    if (roomId == roomId2) {
+
+    }
+    else {
+        history.replaceState({page: 1}, "Sai Chat: " + roomName, "?roomId=" + roomId);
+        loadedChat.style.display = 'block';
+        loadedChat.innerHTML = '';
+        $.ajax({
+            type: "GET",
+            accepts: {
+                html: 'application/html'
+            },
+            url: "room.html",
+            success: function (result) {
+                $('#loadedChat').html(result);
+                document.querySelector('#title').innerText = roomName;
+            },
+            dataType: "html",
+            cache: false
+        });
+    }
 }
 
 function setProfileDropdown() {
