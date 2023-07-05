@@ -261,13 +261,13 @@
                 if (window.innerWidth <= 480) {
                     for (let j = 0; j < msgs.length; j++) {
                         let msg_sender = document.querySelector('#msg-sender-' + j).innerText;
-                        if (msg_sender.length >= 20) {
+                        if (msg_sender.length >= 12) {
                             document.querySelector('#msg-sender-' + j).innerText = msg_sender.substr(0, 20) + "...";
                         }
 
                         if (msgs[j].replyingTo != null) {
                             let reply_sender = document.querySelector('#reply-sender-' + j).innerText;
-                            if (reply_sender.length >= 20) {
+                            if (reply_sender.length >= 12) {
                                 document.querySelector('#reply-sender-' + j).innerText = reply_sender.substr(0, 20) + "...:";
                             }
                         }
@@ -275,13 +275,8 @@
                 }
             }
 
-            window.onresize = function() {
-                shrinkNames();
-            }
-
-            window.onload = function () {
-                shrinkNames();
-            }
+            window.addEventListender('resize', shrinkNames);
+            window.addEventListender('load', shrinkNames);
         </script>
     </body>
 </html>
