@@ -232,13 +232,17 @@ function toggleActiveTab(tab) {
         groups_btn.classList.add('side-menu-btn-active');
         dms_container.style.display = 'none';
         groups_container.style.display = 'block';
-        availableChats.children[1].children[1].children[0].focus();
+        if (availableChats.children[1].children[1].children[0] != null) {
+            availableChats.children[1].children[1].children[0].focus();
+        }
     } else if (tab == 'dms') {
         groups_btn.classList.remove('side-menu-btn-active');
         dms_btn.classList.add('side-menu-btn-active');
         groups_container.style.display = 'none';
         dms_container.style.display = 'block';
-        availableChats.children[0].children[1].children[0].focus();
+        if (availableChats.children[0].children[1].children[0] != null) {
+            availableChats.children[0].children[1].children[0].focus();
+        }
     }
 }
 
