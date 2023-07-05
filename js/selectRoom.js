@@ -41,8 +41,8 @@ let signedInWithGoogleBool = false;
 signInWithGoogleBtn.addEventListener('click', signInWithGoogle);
 signOutBtn.addEventListener('click', customSignOut);
 
-dms_btn.addEventListener('click', toggleActiveTab);
-groups_btn.addEventListener('click', toggleActiveTab);
+dms_btn.addEventListener('click', toggleActiveTab('dms'));
+groups_btn.addEventListener('click', toggleActiveTab('groups'));
 
 function signInWithGoogle() {
     signInWithPopup(auth, provider)
@@ -221,15 +221,15 @@ function customSignOut() {
 }
 
 // Side Menu
-function toggleActiveTab() {
-    let activeTabId = document.querySelector('.side-menu-btn-active').id;
-    if (activeTabId == 'dms-btn') {
+function toggleActiveTab(tab) {
+    // let activeTabId = document.querySelector('.side-menu-btn-active').id;
+    if (tab == 'groups') {
         dms_btn.classList.remove('side-menu-btn-active');
         groups_btn.classList.add('side-menu-btn-active');
         dms_container.style.display = 'none';
         groups_container.style.display = 'block';
         availableChats.children[1].children[1].children[0].focus();
-    } else if (activeTabId == 'groups-btn') {
+    } else if (activeTabId == 'dms') {
         groups_btn.classList.remove('side-menu-btn-active');
         dms_btn.classList.add('side-menu-btn-active');
         groups_container.style.display = 'none';
@@ -242,7 +242,7 @@ sideMenuBtns.addEventListener('mouseover', function() {
     toggleAvailableChats('on');
 });
 
-sideMenuBtns.addEventListener('mouseleave', function() {
+sideMenuBtns.addEventLitabner('mouseleave', function() {
     toggleAvailableChats('off');
 });
 
@@ -276,11 +276,11 @@ document.onkeyup = function(eventKeyName) {
         }
         if (document.activeElement === dms_btn) {
             toggleAvailableChats('on');
-            toggleActiveTab();
+            toggleActiveTab('dms');
         }
         if (document.activeElement === groups_btn) {
             toggleAvailableChats('on');
-            toggleActiveTab();
+            toggleActiveTab('groups');
         }
     }
     if (eventKeyName.key == 'Tab') {
