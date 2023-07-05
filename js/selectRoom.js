@@ -41,8 +41,12 @@ let signedInWithGoogleBool = false;
 signInWithGoogleBtn.addEventListener('click', signInWithGoogle);
 signOutBtn.addEventListener('click', customSignOut);
 
-dms_btn.addEventListener('click', toggleActiveTab('dms'));
-groups_btn.addEventListener('click', toggleActiveTab('groups'));
+dms_btn.addEventListener('click', function() {
+    toggleActiveTab('dms');
+});
+groups_btn.addEventListener('click', function() {
+    toggleActiveTab('groups');
+});
 
 function signInWithGoogle() {
     signInWithPopup(auth, provider)
@@ -229,7 +233,7 @@ function toggleActiveTab(tab) {
         dms_container.style.display = 'none';
         groups_container.style.display = 'block';
         availableChats.children[1].children[1].children[0].focus();
-    } else if (activeTabId == 'dms') {
+    } else if (tab == 'dms') {
         groups_btn.classList.remove('side-menu-btn-active');
         dms_btn.classList.add('side-menu-btn-active');
         groups_container.style.display = 'none';
