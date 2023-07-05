@@ -290,6 +290,9 @@ document.onkeyup = function(eventKeyName) {
             toggleAvailableChats('on');
             toggleActiveTab('groups');
         }
+        if (document.activeElement === document.querySelector('#input')) {
+            document.querySelector('#send').click();
+        }
     }
     if (eventKeyName.key == 'Tab') {
         // let tempArr = [dms_btn, groups_btn, availableChats];
