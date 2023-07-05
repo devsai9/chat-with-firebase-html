@@ -15,11 +15,15 @@
         <div id="container">
             <div id="chat-window"></div>
             <br>
-            <input type="text" id="input" placeholder="Type something to chat" autofocus/>
-            <button id="send">Send</button>
+            <div id="input-container">
+                <input type="text" id="input" placeholder="Type something to chat" autofocus/>
+                <button id="send">
+                    <span class="material-symbols-outlined">send</span>
+                </button>
+            </div>
         </div>
         <script type="module">
-            //* VARIABLES
+            // VARIABLES
             import { app } from '/js/init.js';
             import { getFirestore, collection, getDoc, getDocs, doc, setDoc, query, onSnapshot, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
             import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
@@ -34,7 +38,7 @@
             const chatWindow = document.querySelector('#chat-window');
             send.addEventListener('click', sendMsg);
 
-            //* Firebase Authentication
+            // Firebase Authentication
             // Initialize Firebase Authentication
             const auth = getAuth(app);
             // Initialize the Google Auth Provider
@@ -43,7 +47,7 @@
             let profile_picture;
             let email;
 
-            //* Sign in
+            // Sign in
             // Sign in with Google
             onAuthStateChanged(auth, (user) => {
                 if (user) {
@@ -76,7 +80,7 @@
             const searchParams = new URLSearchParams(window.location.search);
             const roomId = searchParams.get('roomId');
 
-            //* Firebase Firestore
+            // Firebase Firestore
             // Initialize Firebase Firestore
             const db = getFirestore(app);
 
@@ -103,7 +107,7 @@
             // let roomIdIndex = availableRoomIds.indexOf(roomId);
             // document.querySelector('#title').innerText = availableRooms[roomIdIndex].name + " " + availableRooms[roomIdIndex].emoji;
 
-            //* Live Chat
+            // Live Chat
             const q = query(roomMessages);
             const unsubscribe = onSnapshot(q, (querySnapshot) => {
                 msgs = [];
@@ -124,12 +128,25 @@
                 redrawChatWindow();
             }
 
+            // Checks if the input is valid
+            function checkInputValidity() {
+                let value = document.querySelector('#input').value;
+                if (value.replaceAll(' ', '') == '') {
+                    send.setAttribute('disabled', 'true');
+                    return false;
+                } else {
+                    send.removeAttribute('disabled');
+                    return value;
+                }
+            }
+
             // Creates Firebase document
             async function sendMsg() {
-                let value = input.value;
-                if (value == '' || value == ' ') {
+                let value = checkInputValidity();
+                if (value == false) {
 
-                } else {
+                }
+                else {
                     let currentDate = new Date();
 
                     let currentHour = currentDate.getHours();
@@ -255,8 +272,10 @@
 
                     chatWindow.appendChild(msg_wrapper);
                 }
+                shrinkNames();
             }
 
+            // Cuts off sender names if they are longer than 12 characters and if the screen size is <480 px
             function shrinkNames() {
                 if (window.innerWidth <= 480) {
                     for (let j = 0; j < msgs.length; j++) {
@@ -269,14 +288,23 @@
                             let reply_sender = document.querySelector('#reply-sender-' + j).innerText;
                             if (reply_sender.length >= 12) {
                                 document.querySelector('#reply-sender-' + j).innerText = reply_sender.substr(0, 12) + "...:";
+                                if (msgs[msgs[j].replyingTo].content.length >= 10) {
+                                    document.querySelector('#reply-sender-' + j).style.width = 'min-content';
+                                }
                             }
                         }
                     }
                 }
             }
 
-            window.addEventListener('load', shrinkNames);
+            document.addEventListener('load', function() {
+                shrinkNames();
+                checkInputValidity();
+            });
             window.addEventListener('resize', shrinkNames);
+            input.addEventListener('input', function() {
+                checkInputValidity();
+            });
         </script>
     </body>
 </html>

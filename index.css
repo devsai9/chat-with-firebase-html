@@ -176,6 +176,10 @@
     border-radius: 10px;
 }
 
+.chat-list-item:active {
+    outline: 0 !important;
+}
+
 .chat-list-item-room-details {
     display: flex;
     flex-direction: column;

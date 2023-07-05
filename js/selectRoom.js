@@ -1,3 +1,4 @@
+// VARIABLES
 import { app } from '/js/init.js';
 import { getFirestore, collection, getDocs, where, query } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
@@ -36,8 +37,8 @@ let username;
 let profile_picture;
 let email;
 let signedInBool;
-let signedInWithGoogleBool = false;
 
+// Event Listeners
 signInWithGoogleBtn.addEventListener('click', signInWithGoogle);
 signOutBtn.addEventListener('click', customSignOut);
 
@@ -48,6 +49,7 @@ groups_btn.addEventListener('click', function() {
     toggleActiveTab('groups');
 });
 
+// Allow Signin with Google
 function signInWithGoogle() {
     signInWithPopup(auth, provider)
     .then((result) => {
@@ -60,10 +62,6 @@ function signInWithGoogle() {
         profile_picture = user.photoURL;
         email = user.email;
         signedInBool = true;
-        signedInWithGoogleBool = true;
-
-        getRooms();
-        signedIn();
     }).catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
@@ -72,9 +70,8 @@ function signInWithGoogle() {
         const email = error.customData.email;
         // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error);
-
-        signedInBool = false;
-        notSignedIn();
+        alert('Error ' + errorCode + '\nThere was an error signing you in. Please try again.\nThe page will reload after you press "OK".');
+        window.location.reload();
     });
 }
 
@@ -185,11 +182,7 @@ function signedIn() {
     sideMenu.style.display = 'flex';
     availableChats.style.display = 'none';
 
-    setTimeout(function() {
-        if (!signedInWithGoogleBool) {
-            getRooms();
-        }
-    }, 500);
+    getRooms();
 }
 
 function notSignedIn() {
@@ -271,7 +264,17 @@ const imgBtn = document.querySelector('#profile-picture');
 const dropDown = document.querySelector('#profile-dropdown');
 
 imgBtn.addEventListener('click', toggleDropdown);
+function toggleDropdown() {
+    if (signedInBool) {
+        if (dropDown.style.display == 'none' || dropDown.style.display == '') {
+            dropDown.style.display = 'flex';
+        } else {
+            dropDown.style.display = 'none';
+        }
+    } else {}
+}
 
+// Document Events
 document.onkeyup = function(eventKeyName) {
     eventKeyName = eventKeyName;
     if (eventKeyName.key == 'Enter') {
@@ -309,14 +312,4 @@ document.onkeyup = function(eventKeyName) {
             toggleAvailableChats('off');
         }
     }
-}
-
-function toggleDropdown() {
-    if (signedInBool) {
-        if (dropDown.style.display == 'none' || dropDown.style.display == '') {
-            dropDown.style.display = 'flex';
-        } else {
-            dropDown.style.display = 'none';
-        }
-    } else {}
 }
