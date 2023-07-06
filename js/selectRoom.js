@@ -26,6 +26,20 @@ const groups_btn = document.querySelector('#groups-btn');
 const loadedChat = document.querySelector('#loadedChat');
 loadedChat.style.display = 'none';
 
+const header = document.querySelector('.header');
+const menuBtn = document.querySelector('#menu');
+menuBtn.addEventListener('click', function() {
+    if (sideMenu.style.display == 'flex') {
+        sideMenu.style.display = 'none';
+        header.style.borderBottomLeftRadius = 10 + 'px';
+        toggleAvailableChats('off');
+    } else if (sideMenu.style.display == 'none' || sideMenu.style.display == '') {
+        sideMenu.style.display = 'flex';
+        header.style.borderBottomLeftRadius = 0;
+        toggleAvailableChats('on');
+    }
+});
+
 // Initialize Firebase Firestore
 const db = getFirestore(app);
 
@@ -186,7 +200,11 @@ function signedIn() {
     signOutBtn.style.display = 'block';
     profileDropdownDetailsWrapper.style.display = 'flex';
     profilePictureBtn.style.display = 'block';
-    sideMenu.style.display = 'flex';
+    if (window.innerWidth <= 700) {
+        
+    } else {
+        sideMenu.style.display = 'flex';
+    }
     availableChats.style.display = 'none';
 
     getRooms();
@@ -318,5 +336,11 @@ document.onkeyup = function(eventKeyName) {
         if (!tempArr2.includes(document.activeElement)) {
             toggleAvailableChats('off');
         }
+    }
+}
+
+document.onclick = function() {
+    if (document.activeElement == document.body) {
+        toggleAvailableChats('off');
     }
 }

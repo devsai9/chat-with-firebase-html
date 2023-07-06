@@ -3,6 +3,14 @@
     border: 0 !important;
 }
 
+#menu {
+    cursor: pointer;
+    margin-inline: 10px;
+    margin-right: 20px;
+    font-size: 30px;
+    display: none;
+}
+
 #profile-dropdown {
     background-color: black;
     padding: 20px;
@@ -94,7 +102,7 @@
     width: -moz-fit-content;
     width: fit-content;
     height: calc(90vh - 20px);
-    display: flex;
+    display: inherit;
     margin-top: -20px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -213,14 +221,20 @@
     padding-top: 10px;
 }
 
-/* @media screen and (max-width: 700px) {
+@media screen and (max-width: 700px) {
     #side-menu {
-        display: none !important;
+        display: none;
     }
     #loadedChat {
-        margin-left: 0;
+        margin-inline: 10px;
     }
-} */
+    #menu {
+        display: block;
+    }
+    .header {
+        border-bottom-left-radius: 10px;
+    }
+}
 
 /* Scroll Bar  */
 /* width */
