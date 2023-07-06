@@ -297,6 +297,7 @@
                     chatWindow.appendChild(msg_wrapper);
                 }
                 shrinkNames();
+                document.querySelector('#input').scrollIntoView();
             }
 
             // Converts a number into a month
@@ -351,7 +352,7 @@
                         if (msg_sender.length >= 12) {
                             document.querySelector('#msg-sender-' + j).innerText = msg_sender.substr(0, 12) + "...";
                         }
-                        
+
                         if (msgs[j].replyingTo != null || msgs[j].replyingTo != undefined) {
                             let reply_sender = document.querySelector('#reply-sender-' + j).innerText;
                             if (reply_sender.length >= 12) {
