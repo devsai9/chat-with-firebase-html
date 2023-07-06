@@ -155,22 +155,34 @@
 .date-block {
     display: flex;
     justify-content: center;
-    align-items: center;
-    flex-direction: column;
     color: #aeafc8;
-    font-size: 1.15rem;
+    font-size: 12px;
 }
 
-/* .date-block::before {
+.date-block::before {
     content: "";
     position: relative;
-    width: calc(100vw - 20px - 10px - 30px - 125px);
-    margin-block: 10px;
+    width: 50vw;
     height: 2px;
-    background-color: #aeafc8;
+    background-color: #aeafc84e;
     margin-bottom: -5px;
+    border-radius: 10px;
+}
+
+.date-block::after {
+    content: "";
+    position: relative;
+    width: 50vw;
+    height: 2px;
+    background-color: #aeafc84e;
+    margin-bottom: -5px;
+    border-radius: 10px;
 }
 
 .date-block > p {
-    margin-bottom: -10px;
-} */
+    margin-block: 0;
+    margin-inline: 10px;
+    margin-top: -5px;
+    min-width: 75px;
+    text-align: center;
+}

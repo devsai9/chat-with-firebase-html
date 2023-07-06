@@ -210,7 +210,17 @@
     height: calc(90vh - 30px);
     margin-left: 30px;
     overflow: auto;
+    padding-top: 10px;
 }
+
+/* @media screen and (max-width: 700px) {
+    #side-menu {
+        display: none !important;
+    }
+    #loadedChat {
+        margin-left: 0;
+    }
+} */
 
 /* Scroll Bar  */
 /* width */
