@@ -345,13 +345,26 @@
 
             // Cuts off sender names if they are longer than 12 characters and if the screen size is <480 px
             function shrinkNames() {
-                if (window.innerWidth <= 480) {
+                if (window.innerWidth <= 500) {
                     for (let j = 0; j < msgs.length; j++) {
                         let msg_sender = document.querySelector('#msg-sender-' + j).innerText;
                         if (msg_sender.length >= 12) {
                             document.querySelector('#msg-sender-' + j).innerText = msg_sender.substr(0, 12) + "...";
                         }
-
+                        
+                        if (msgs[j].replyingTo != null || msgs[j].replyingTo != undefined) {
+                            let reply_sender = document.querySelector('#reply-sender-' + j).innerText;
+                            if (reply_sender.length >= 12) {
+                                document.querySelector('#reply-sender-' + j).innerText = reply_sender.substr(0, 12) + "...:";
+                                if (msgs[msgs[j].replyingTo].content.length >= 10) {
+                                    document.querySelector('#reply-sender-' + j).style.width = 'min-content';
+                                }
+                            }
+                        }
+                    }
+                }
+                if (window.innerWidth <= 600) {
+                    for (let j = 0; j < msgs.length; j++) {
                         if (msgs[j].replyingTo != null || msgs[j].replyingTo != undefined) {
                             let reply_sender = document.querySelector('#reply-sender-' + j).innerText;
                             if (reply_sender.length >= 12) {
