@@ -1,5 +1,5 @@
 // VARIABLES
-import { app } from '/js/init.js';
+import { app } from 'init.js';
 import { getFirestore, collection, getDocs, where, query } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
